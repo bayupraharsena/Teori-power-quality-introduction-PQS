@@ -1,0 +1,31 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>PENDING</title>
+<style>html,body{margin:0}iframe{width:1280px;height:720px;border:0}</style></head><body>
+<iframe id="f" src="index.html"></iframe>
+<script>
+var out=[], f=document.getElementById('f');
+f.onload=function(){
+  var w=f.contentWindow, d=f.contentDocument;
+  var target=27, i=0;
+  function step(){
+    if(i>target){ document.title='DONE :: '+out.join(' || '); return; }
+    if(i===target){
+      var s=d.querySelectorAll('.slide')[target];
+      var b=s.querySelector('.s-body');
+      (function walk(el, depth){
+        if(depth>4) return;
+        Array.prototype.forEach.call(el.children, function(c){
+          var r=c.getBoundingClientRect();
+          if(r.height<1) return;
+          out.push('  '.repeat(depth)+c.tagName.toLowerCase()+'.'+String(c.className).split(' ').slice(0,2).join('.')+' h='+Math.round(r.height)+' top='+Math.round(r.top));
+          walk(c, depth+1);
+        });
+      })(b, 0);
+      out.push('BODY h='+Math.round(b.getBoundingClientRect().height)+' scroll='+b.scrollHeight);
+    }
+    i++;
+    d.dispatchEvent(new w.KeyboardEvent('keydown',{key:'ArrowRight',bubbles:true,cancelable:true}));
+    setTimeout(step, 40);
+  }
+  setTimeout(step, 300);
+};
+</script></body></html>

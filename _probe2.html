@@ -1,0 +1,21 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>PENDING</title>
+<style>html,body{margin:0}iframe{width:1280px;height:720px;border:0}</style></head><body>
+<iframe id="f" src="index.html"></iframe>
+<script>
+var out=[], f=document.getElementById('f');
+f.onload=function(){
+  var w=f.contentWindow, d=f.contentDocument;
+  var i=0;
+  function step(){
+    if(i>=30){ document.title='DONE :: '+out.join(' || '); return; }
+    var s=d.querySelectorAll('.slide')[i];
+    var b=s.querySelector('.s-body');
+    var cs=w.getComputedStyle(s), cb=w.getComputedStyle(b);
+    out.push('S'+(i+1)+'{s.h='+s.clientHeight+',s.pb='+cs.paddingBottom+',b.h='+b.clientHeight+',b.scroll='+b.scrollHeight+',b.ov='+(b.scrollHeight-b.clientHeight)+',b.pb='+cb.paddingBottom+',b.disp='+cb.display+'}');
+    i++;
+    d.dispatchEvent(new w.KeyboardEvent('keydown',{key:'ArrowRight',bubbles:true,cancelable:true}));
+    setTimeout(step, 50);
+  }
+  setTimeout(step, 300);
+};
+</script></body></html>

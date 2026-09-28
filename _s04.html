@@ -1,0 +1,2754 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pengantar Kualitas Daya — Minggu 1 | HIOKI PQ3100</title>
+<style>
+/* ============================================================
+   KULIAH KUALITAS DAYA — MINGGU 1
+   Deck 30 slide · stage tetap 1280×720 · tema gelap/terang
+   ============================================================ */
+
+:root{ --sw:1280px; --sh:720px; }
+
+html[data-theme="dark"]{
+  --bg:#060d19; --bg2:#0b1626;
+  --glow1:rgba(56,189,248,.17); --glow2:rgba(167,139,250,.13);
+  --panel:rgba(255,255,255,.055); --panel2:rgba(255,255,255,.10);
+  --line:rgba(255,255,255,.15); --line2:rgba(255,255,255,.30);
+  --fg:#eff5ff; --fg2:#aec0d9; --fg3:#7c8ea9;
+  --accent:#38bdf8; --accent2:#fbbf24; --green:#34d399;
+  --rose:#fb7185; --violet:#a78bfa; --cyan:#22d3ee;
+  --fig:#ffffff; --figline:rgba(255,255,255,.22);
+  --shadow:0 22px 50px rgba(0,0,0,.52);
+  --chip:rgba(56,189,248,.13);
+}
+html[data-theme="light"]{
+  --bg:#f2f6fb; --bg2:#e5edf8;
+  --glow1:rgba(3,105,161,.11); --glow2:rgba(109,40,217,.09);
+  --panel:#ffffff; --panel2:#f5f9fd;
+  --line:#d3dded; --line2:#b3c3d8;
+  --fg:#0a1929; --fg2:#3f556e; --fg3:#6b7f97;
+  --accent:#0369a1; --accent2:#b45309; --green:#047857;
+  --rose:#be123c; --violet:#6d28d9; --cyan:#0e7490;
+  --fig:#ffffff; --figline:#d3dded;
+  --shadow:0 14px 34px rgba(12,44,84,.14);
+  --chip:rgba(3,105,161,.10);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:"Inter","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  background:var(--bg); color:var(--fg); overflow:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- viewport & stage ---------- */
+#viewport{position:fixed; inset:0; overflow:hidden}
+#stage{
+  position:absolute; left:50%; top:50%;
+  width:var(--sw); height:var(--sh);
+  transform-origin:center center;
+  transform:translate(-50%,-50%) scale(var(--s,1));
+  background:
+    radial-gradient(1100px 620px at 8% -8%, var(--glow1), transparent 62%),
+    radial-gradient(950px 560px at 102% 108%, var(--glow2), transparent 60%),
+    linear-gradient(160deg, var(--bg2), var(--bg));
+  border-radius:6px; overflow:hidden;
+  box-shadow:var(--shadow);
+}
+
+/* ---------- slide shell ---------- */
+.slide{
+  position:absolute; inset:0; display:none;
+  flex-direction:column;
+  padding:22px 40px 34px;
+}
+.slide.active{display:flex}
+
+.s-head{margin-bottom:7px;flex:0 0 auto}
+.s-kicker{
+  font-size:12.5px; font-weight:700; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--accent); margin-bottom:3px; display:flex; align-items:center; gap:9px;
+}
+.s-kicker::before{content:""; width:26px; height:3px; border-radius:2px; background:var(--accent)}
+.s-title{font-size:32px; line-height:1.1; font-weight:800; letter-spacing:-.015em}
+.s-title.sm{font-size:27px}
+.s-sub{font-size:15.5px; color:var(--fg2); margin-top:3px; line-height:1.3}
+
+.s-body{flex:1 1 auto; min-height:0; display:flex; flex-direction:column; gap:8px}
+
+/* slide number badge */
+.pg{
+  position:absolute; right:40px; bottom:9px;
+  font-size:14px; font-weight:700; color:var(--fg3);
+  letter-spacing:.06em; font-variant-numeric:tabular-nums;
+}
+.pg b{color:var(--accent)}
+.slide::before{
+  content:attr(data-foot);
+  position:absolute; left:40px; bottom:11px;
+  font-size:12.5px; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--fg3); font-weight:600;
+}
+
+/* ---------- generic blocks ---------- */
+.row{display:flex; gap:18px; min-height:0}
+.col{display:flex; flex-direction:column; gap:12px; min-height:0}
+.g2{display:grid; grid-template-columns:1fr 1fr; gap:16px; min-height:0}
+.g2u{display:grid; grid-template-columns:1fr 1fr; gap:16px; min-height:0; align-items:start}
+.g2s{display:grid; grid-template-columns:1.05fr .95fr; gap:18px; min-height:0}
+.g3{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; min-height:0}
+.g4{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; min-height:0}
+.g5{display:grid; grid-template-columns:repeat(5,1fr); gap:10px; min-height:0}
+.fill{flex:1 1 auto; min-height:0}
+
+.card{
+  background:var(--panel); border:1px solid var(--line); border-radius:12px;
+  padding:10px 13px; min-height:0;
+}
+.card.pad-sm{padding:8px 10px}
+.card.flat{background:var(--panel2)}
+.card h4{font-size:16px; font-weight:800; margin-bottom:5px; display:flex; align-items:center; gap:7px}
+.card h4 .ic{font-size:16px; line-height:1}
+.card p{font-size:14.5px; color:var(--fg2); line-height:1.44}
+.card .tag{
+  display:inline-block; font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase;
+  padding:2px 8px; border-radius:20px; background:var(--chip); color:var(--accent); margin-bottom:5px;
+}
+
+ul.bl{list-style:none; display:flex; flex-direction:column; gap:6px}
+ul.bl>li{
+  font-size:15px; line-height:1.42; color:var(--fg2);
+  padding-left:21px; position:relative;
+}
+ul.bl>li::before{
+  content:""; position:absolute; left:4px; top:9px;
+  width:7px; height:7px; border-radius:2px; background:var(--accent); transform:rotate(45deg);
+}
+ul.bl>li b,ul.bl>li strong{color:var(--fg); font-weight:700}
+ul.bl.tight>li{font-size:13.5px; gap:4px}
+ul.bl.tight>li::before{top:7px;width:6px;height:6px}
+
+ol.nl{list-style:none; counter-reset:n; display:flex; flex-direction:column; gap:6px}
+ol.nl>li{
+  counter-increment:n; position:relative; padding-left:40px;
+  font-size:14.5px; line-height:1.42; color:var(--fg2);
+}
+ol.nl>li::before{
+  content:counter(n); position:absolute; left:0; top:-1px;
+  width:23px; height:23px; border-radius:7px;
+  background:var(--chip); color:var(--accent);
+  font-size:14px; font-weight:800; display:flex; align-items:center; justify-content:center;
+}
+ol.nl>li b{color:var(--fg)}
+
+/* callouts */
+.call{
+  border-radius:11px; padding:9px 13px; font-size:14px; line-height:1.42;
+  border-left:4px solid var(--accent); background:var(--panel); color:var(--fg2);
+}
+.call b{color:var(--fg)}
+.call .h{display:block; font-weight:800; color:var(--fg); margin-bottom:3px; font-size:14px}
+.call.warn{border-left-color:var(--accent2); background:color-mix(in srgb,var(--accent2) 11%,transparent)}
+.call.good{border-left-color:var(--green); background:color-mix(in srgb,var(--green) 11%,transparent)}
+.call.bad{border-left-color:var(--rose); background:color-mix(in srgb,var(--rose) 11%,transparent)}
+.call.idea{border-left-color:var(--violet); background:color-mix(in srgb,var(--violet) 11%,transparent)}
+
+/* tables */
+table.tbl{width:100%; border-collapse:separate; border-spacing:0; font-size:13.5px}
+table.tbl th{
+  text-align:left; font-weight:800; font-size:13.5px; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--accent); padding:5px 9px; border-bottom:2px solid var(--line2);
+  background:var(--chip);
+}
+table.tbl td{
+  padding:5px 9px; border-bottom:1px solid var(--line); color:var(--fg2); line-height:1.36;
+  vertical-align:top;
+}
+table.tbl tr:last-child td{border-bottom:none}
+table.tbl td b,table.tbl td strong{color:var(--fg)}
+table.tbl.tight{font-size:12.5px}
+table.tbl.tight td{padding:4px 8px}
+table.tbl.tight th{padding:4px 8px; font-size:11.5px}
+.ok{color:var(--green); font-weight:800}
+.no{color:var(--rose); font-weight:800}
+
+/* figures */
+.fig{
+  background:var(--fig); border-radius:10px; padding:6px;
+  border:1px solid var(--figline); display:flex; flex-direction:column;
+  align-items:center; justify-content:center; min-height:0; overflow:hidden;
+}
+.fig img{max-width:100%; max-height:100%; object-fit:contain; display:block; border-radius:5px}
+.figcap{font-size:11.5px; color:var(--fg3); margin-top:4px; line-height:1.32; text-align:center}
+.figwrap{display:flex; flex-direction:column; min-height:0}
+.figwrap>.fig{flex:1 1 auto}
+.figwrap>.figcap{flex:0 0 auto}
+
+.chip{
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:13px; font-weight:800; padding:4px 10px; border-radius:20px;
+  background:var(--chip); color:var(--accent);
+}
+.chip.a2{background:color-mix(in srgb,var(--accent2) 16%,transparent); color:var(--accent2)}
+.chip.gr{background:color-mix(in srgb,var(--green) 16%,transparent); color:var(--green)}
+.chip.ro{background:color-mix(in srgb,var(--rose) 16%,transparent); color:var(--rose)}
+.chip.vi{background:color-mix(in srgb,var(--violet) 16%,transparent); color:var(--violet)}
+
+.kv{display:flex; flex-direction:column; gap:6px}
+.kv .r{display:flex; gap:10px; font-size:16px; line-height:1.4}
+.kv .r .k{flex:0 0 42%; color:var(--fg3); font-weight:600}
+.kv .r .v{flex:1 1 auto; color:var(--fg); font-weight:600}
+
+.big{font-size:38px; font-weight:800; letter-spacing:-.02em; line-height:1}
+.mid{font-size:23px; font-weight:800; line-height:1.14}
+.mono{font-family:"SFMono-Regular",ui-monospace,Menlo,Consolas,monospace}
+
+/* animations on slide enter */
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes pop{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.slide.active .a{animation:rise .52s cubic-bezier(.2,.75,.3,1) both; animation-delay:var(--d,0s)}
+.slide.active .ap{animation:pop .5s cubic-bezier(.2,.75,.3,1) both; animation-delay:var(--d,0s)}
+
+/* wave animation */
+.wave-anim path.trace{
+  stroke-dasharray:1500; stroke-dashoffset:1500;
+}
+.slide.active .wave-anim path.trace{animation:draw 2.4s ease-out .25s forwards}
+
+/* ---------- HUD ---------- */
+#hud{
+  position:fixed; left:0; right:0; bottom:0; z-index:40;
+  display:flex; align-items:center; gap:10px;
+  padding:9px 14px; font-size:13px;
+  background:linear-gradient(to top, rgba(0,0,0,.42), transparent);
+  pointer-events:none;
+}
+html[data-theme="light"] #hud{background:linear-gradient(to top, rgba(255,255,255,.75), transparent)}
+#hud>*{pointer-events:auto}
+.btn{
+  display:inline-flex; align-items:center; gap:7px;
+  border:1px solid var(--line2); background:var(--panel2); color:var(--fg);
+  font:inherit; font-size:13px; font-weight:700; padding:7px 12px; border-radius:9px;
+  cursor:pointer; backdrop-filter:blur(8px); transition:.16s; white-space:nowrap;
+}
+.btn:hover{border-color:var(--accent); color:var(--accent); transform:translateY(-1px)}
+.btn.primary{background:var(--accent); color:#03111e; border-color:var(--accent)}
+html[data-theme="light"] .btn.primary{color:#fff}
+.btn:disabled{opacity:.4; cursor:not-allowed; transform:none}
+#counter{
+  font-variant-numeric:tabular-nums; font-weight:800; color:var(--fg);
+  padding:0 4px; min-width:66px; text-align:center;
+}
+#counter span{color:var(--fg3); font-weight:600}
+.spacer{flex:1 1 auto}
+#hintbar{
+  position:fixed; top:12px; left:50%; transform:translateX(-50%); z-index:41;
+  font-size:12.5px; font-weight:600; color:var(--fg2);
+  background:var(--panel2); border:1px solid var(--line); border-radius:20px;
+  padding:6px 16px; backdrop-filter:blur(8px);
+  transition:opacity .5s; opacity:1;
+}
+#hintbar.hide{opacity:0}
+#progress{position:fixed; left:0; top:0; height:3px; background:var(--accent); z-index:42; width:0; transition:width .25s}
+
+/* ---------- outline drawer ---------- */
+#outline{
+  position:fixed; inset:0; z-index:60; display:none;
+  background:rgba(3,8,17,.72); backdrop-filter:blur(5px);
+}
+html[data-theme="light"] #outline{background:rgba(226,236,248,.8)}
+#outline.open{display:block}
+#outline .panel{
+  position:absolute; left:0; top:0; bottom:0; width:min(560px,92vw);
+  background:var(--bg2); border-right:1px solid var(--line);
+  padding:22px 20px; overflow-y:auto;
+}
+#outline h3{font-size:17px; margin-bottom:14px; color:var(--accent); letter-spacing:.06em; text-transform:uppercase}
+#outline .oitem{
+  display:flex; gap:11px; align-items:flex-start;
+  padding:8px 10px; border-radius:9px; cursor:pointer; font-size:14.5px; color:var(--fg2);
+  border:1px solid transparent;
+}
+#outline .oitem:hover{background:var(--panel); border-color:var(--line); color:var(--fg)}
+#outline .oitem.cur{background:var(--chip); color:var(--fg); border-color:var(--accent)}
+#outline .oitem .n{
+  flex:0 0 26px; height:22px; border-radius:6px; background:var(--panel2);
+  font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center; color:var(--accent);
+}
+#outline .osep{font-size:11.5px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--fg3); margin:14px 0 6px; padding-left:10px}
+
+/* ---------- interactive widgets ---------- */
+.tabs{display:flex; gap:7px; flex-wrap:wrap}
+.tab{
+  border:1px solid var(--line); background:var(--panel); color:var(--fg2);
+  font:inherit; font-size:14px; font-weight:700; padding:7px 13px; border-radius:9px; cursor:pointer; transition:.15s;
+}
+.tab:hover{border-color:var(--accent); color:var(--accent)}
+.tab.on{background:var(--accent); color:#03111e; border-color:var(--accent)}
+html[data-theme="light"] .tab.on{color:#fff}
+.wire-info{display:none}
+.wire-info.on{display:grid; flex:1 1 auto; min-height:0}
+
+.quiz{display:flex; flex-direction:column; gap:8px; min-height:0}
+.quiz .q{flex:1 1 auto; display:flex; flex-direction:column; justify-content:center}
+.q{border:1px solid var(--line); border-radius:11px; padding:7px 11px; background:var(--panel)}
+.q .qt{font-size:14.5px; font-weight:700; color:var(--fg); margin-bottom:6px; line-height:1.32}
+.q .opts{display:grid; grid-template-columns:1fr 1fr; gap:6px}
+.q .opt{
+  text-align:left; border:1px solid var(--line); background:var(--panel2); color:var(--fg2);
+  font:inherit; font-size:13px; padding:6px 9px; border-radius:8px; cursor:pointer; transition:.14s;
+  display:flex; gap:8px; align-items:flex-start; line-height:1.32;
+}
+.q .opt .lk{font-weight:800; color:var(--accent); flex:0 0 auto}
+.q .opt:hover:not(:disabled){border-color:var(--accent); color:var(--fg)}
+.q .opt.right{background:color-mix(in srgb,var(--green) 20%,transparent); border-color:var(--green); color:var(--fg); font-weight:700}
+.q .opt.wrong{background:color-mix(in srgb,var(--rose) 20%,transparent); border-color:var(--rose); color:var(--fg)}
+.q .opt:disabled{cursor:default}
+.q .fb{font-size:12.5px; color:var(--fg2); margin-top:5px; display:none; line-height:1.38}
+.q.answered .opts{display:none}
+.q .verdict{display:inline-block; font-weight:800; padding:1px 8px; border-radius:6px; margin-right:6px; font-size:11.5px; letter-spacing:.02em}
+.q .verdict.ok{background:color-mix(in srgb,var(--green) 24%,transparent); color:var(--green)}
+.q .verdict.no{background:color-mix(in srgb,var(--rose) 24%,transparent); color:var(--rose)}
+.q .fb.show{display:block}
+.q .fb b{color:var(--fg)}
+#q1score,#q2score{font-weight:800; color:var(--accent)}
+
+.range{
+  -webkit-appearance:none; appearance:none; width:100%; height:6px; border-radius:4px;
+  background:var(--line); outline:none;
+}
+.range::-webkit-slider-thumb{
+  -webkit-appearance:none; width:22px; height:22px; border-radius:50%;
+  background:var(--accent); border:3px solid var(--bg2); cursor:pointer;
+}
+.range::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--accent);border:3px solid var(--bg2);cursor:pointer}
+
+.inp{
+  width:100%; border:1px solid var(--line); background:var(--panel2); color:var(--fg);
+  font:inherit; font-size:17px; font-weight:700; padding:9px 12px; border-radius:9px;
+}
+.inp:focus{outline:2px solid var(--accent); outline-offset:-1px}
+label.lab{font-size:13px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--fg3)}
+
+.phen{cursor:pointer; transition:.18s}
+.phen:hover{border-color:var(--accent); transform:translateY(-2px)}
+.phen .det{display:none; font-size:12.5px; color:var(--fg2); margin-top:5px; line-height:1.38; border-top:1px dashed var(--line); padding-top:5px}
+.phen.open .det{display:block}
+.phen .ic{font-size:19px; display:block; margin-bottom:2px}
+
+.step{
+  display:flex; gap:9px; align-items:center; padding:7px 11px; border-radius:10px;
+  background:var(--panel); border:1px solid var(--line);
+}
+.step .n{
+  flex:0 0 28px; height:28px; border-radius:8px; background:var(--accent); color:#03111e;
+  font-weight:800; font-size:14px; display:flex; align-items:center; justify-content:center;
+}
+html[data-theme="light"] .step .n{color:#fff}
+.step .t{font-size:13.5px; font-weight:700; color:var(--fg); line-height:1.22}
+.step .d{font-size:12px; color:var(--fg3); line-height:1.28}
+.arrowdown{text-align:center; color:var(--accent); font-size:15px; line-height:.6; margin:-3px 0}
+
+.ph{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px}
+.tri{font-size:13.5px;line-height:1.45}
+
+/* ---------- print ---------- */
+@page{ size:1280px 720px; margin:0 }
+@media print{
+  html[data-theme],html[data-theme="dark"],html[data-theme="light"]{
+    --bg:#ffffff; --bg2:#ffffff;
+    --glow1:transparent; --glow2:transparent;
+    --panel:#f7fafd; --panel2:#eef4fa;
+    --line:#c9d6e6; --line2:#9fb2c8;
+    --fg:#08192b; --fg2:#33475e; --fg3:#5f738b;
+    --accent:#0b5fa5; --accent2:#9a5b06; --green:#046c50;
+    --rose:#a5113a; --violet:#5b21b6; --cyan:#0b6c86;
+    --fig:#ffffff; --figline:#c9d6e6;
+    --shadow:none; --chip:#e3eefa;
+  }
+  html,body{background:#fff !important;overflow:visible !important}
+  #hud,#hintbar,#outline,#progress{display:none !important}
+  #viewport{position:static;overflow:visible}
+  #stage{
+    position:static; transform:none !important; width:1280px; height:auto;
+    border-radius:0; box-shadow:none; background:#fff !important; overflow:visible;
+  }
+  .slide{
+    display:flex !important; position:relative; inset:auto;
+    width:1280px; height:720px; overflow:hidden;
+    break-after:page; page-break-after:always; break-inside:avoid;
+  }
+  .slide:last-child{break-after:auto; page-break-after:auto}
+  .slide .a,.slide .ap{animation:none !important; opacity:1 !important; transform:none !important}
+  .wave-anim path.trace{stroke-dashoffset:0 !important; animation:none !important}
+  *{-webkit-print-color-adjust:exact; print-color-adjust:exact}
+}
+#hud,#hintbar,#outline{display:none !important}</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<div id="hintbar">Navigasi: <b>←</b> / <b>→</b> · <b>F</b> layar penuh · <b>O</b> daftar isi · <b>P</b> cetak PDF · <b>T</b> tema</div>
+
+<div id="hud">
+  <button class="btn" id="btnPrev" title="Slide sebelumnya (←)">‹ Sebelumnya</button>
+  <button class="btn" id="btnNext" title="Slide berikutnya (→)">Berikutnya ›</button>
+  <div id="counter">1 <span>/ 30</span></div>
+  <div class="spacer"></div>
+  <button class="btn" id="btnOutline" title="Daftar isi (O)">Daftar Isi</button>
+  <button class="btn" id="btnTheme" title="Ganti tema (T)">Tema</button>
+  <button class="btn" id="btnPrint" title="Cetak / simpan PDF (P)">Cetak PDF</button>
+  <button class="btn primary" id="btnFull" title="Layar penuh (F)">⛶ Layar Penuh</button>
+</div>
+
+<div id="outline"><div class="panel">
+  <h3>Daftar Isi — 30 Slide</h3>
+  <div id="olist"></div>
+</div></div>
+
+<div id="viewport"><div id="stage">
+
+<!-- ============================ 1 ============================ -->
+<section class="slide" data-foot="Kuliah Kualitas Daya · Minggu 1" data-title="Judul — Pengantar Kualitas Daya">
+  <div class="s-body" style="justify-content:center; gap:26px">
+    <div class="row" style="align-items:center; gap:34px">
+      <div class="col a" style="flex:1 1 58%; --d:.05s">
+        <div class="chip vi" style="align-self:flex-start">Kuliah Kualitas Daya · Minggu 1 · 2 SKS</div>
+        <h1 style="font-size:58.1px; line-height:1.04; font-weight:800; letter-spacing:-.03em; margin-top:6px">
+          Pengantar<br><span style="color:var(--accent)">Kualitas Daya</span>
+        </h1>
+        <p style="font-size:18.5px; color:var(--fg2); line-height:1.45; max-width:640px">
+          <b style="color:var(--fg)">Introduction to Power Quality</b> — dasar sistem daya AC
+          yang wajib dipahami sebelum melakukan pengukuran kualitas daya dengan
+          <b style="color:var(--fg)">HIOKI PQ3100</b>.
+        </p>
+        <div class="row" style="gap:9px; flex-wrap:wrap; margin-top:2px">
+          <span class="chip">Definisi &amp; Fenomena</span>
+          <span class="chip a2">Standar IEC / IEEE / EN</span>
+          <span class="chip gr">Persiapan &amp; Konfigurasi</span>
+          <span class="chip vi">Dasar Daya AC (P, Q, S, PF)</span>
+        </div>
+      </div>
+      <div class="figwrap a" style="flex:1 1 42%; --d:.18s">
+        <div class="fig" style="padding:0; background:transparent; border:none">
+          <img src="assets/hioki_pq3100_closeup.jpg" alt="HIOKI PQ3100 Power Quality Analyzer">
+        </div>
+        <div class="figcap" style="font-size:12.3px">HIOKI PQ3100 Power Quality Analyzer — alat ukur praktikum Kualitas Daya (IEC 61000-4-30 <b>Class S</b>)</div>
+      </div>
+    </div>
+    <div class="g4 a" style="--d:.32s">
+      <div class="card pad-sm flat"><div class="chip">Program Studi</div><p style="font-size:13.2px">D3 Teknik Listrik Industri<br><b>Politeknik Negeri Madura</b></p></div>
+      <div class="card pad-sm flat"><div class="chip">Beban Materi</div><p style="font-size:13.2px">30 slide · 4 blok<br>± 2 × 50 menit</p></div>
+      <div class="card pad-sm flat"><div class="chip">Prasyarat</div><p style="font-size:13.2px">Rangkaian Listrik<br>Mesin Listrik Dasar</p></div>
+      <div class="card pad-sm flat"><div class="chip">Keluaran</div><p style="font-size:13.2px">Mampu menyiapkan &amp; menjalankan PQ3100 dengan benar</p></div>
+    </div>
+  </div>
+  <div class="pg"></div>
+</section>
+
+<!-- ============================ 2 ============================ -->
+<section class="slide" data-foot="Kuliah Kualitas Daya · Minggu 1" data-title="Agenda & Peta Materi">
+  <div class="s-head">
+    <div class="s-kicker">Agenda</div>
+    <h2 class="s-title">Peta Materi &amp; Alur Pembelajaran</h2>
+    <p class="s-sub">Empat blok yang membawa mahasiswa dari <b>konsep</b> → <b>instrumen</b> → <b>dasar daya AC</b> → <b>kesiapan praktikum</b>.</p>
+  </div>
+  <div class="s-body">
+    <div class="g4 fill a" style="--d:.08s">
+      <div class="card">
+        <div class="tag">Blok A · Slide 3–10</div>
+        <h4>Konsep &amp; Standar</h4>
+        <ul class="bl tight">
+          <li>Apa itu kualitas daya</li>
+          <li>Definisi &amp; ruang lingkup</li>
+          <li>Mengapa harus diukur</li>
+          <li>Fenomena &amp; dampaknya</li>
+          <li>Peta standar IEC/IEEE/EN</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="tag">Blok B · Slide 11–19</div>
+        <h4>Instrumen &amp; Pengukuran</h4>
+        <ul class="bl tight">
+          <li>Product overview PQ3100</li>
+          <li>Bagian, terminal, sensor</li>
+          <li>Persiapan pengukuran</li>
+          <li>Konfigurasi SYSTEM &amp; wiring</li>
+          <li>Investigasi &amp; langkah analisis</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="tag">Blok C · Slide 20–28</div>
+        <h4>Dasar Daya Listrik AC</h4>
+        <ul class="bl tight">
+          <li>Arus, tegangan, hambatan</li>
+          <li>Daya DC &amp; daya AC</li>
+          <li>Segitiga daya &amp; PF</li>
+          <li>Representasi vektor</li>
+          <li>Sistem 3 fasa &amp; P-Q-S</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="tag">Blok D · Slide 29–30</div>
+        <h4>Review &amp; Penutup</h4>
+        <ul class="bl tight">
+          <li>Kuis 1 (slide 14)</li>
+          <li>Kuis 2 (slide 29)</li>
+          <li>Resume &amp; kesimpulan</li>
+          <li>Bekal menuju praktikum</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="g2s" style="flex:0 0 auto">
+      <div class="card flat a" style="--d:.22s">
+        <h4><span class="ic">◎</span> Capaian Pembelajaran Minggu 1</h4>
+        <ol class="nl" style="margin-top:6px">
+          <li><b>Menjelaskan</b> definisi, ruang lingkup, dan fenomena kualitas daya. <span class="chip">C2</span></li>
+          <li><b>Mengidentifikasi</b> standar pengukuran serta perbedaan standar <i>cara mengukur</i> dan <i>batasan</i>. <span class="chip">C2–C3</span></li>
+          <li><b>Menjelaskan</b> prinsip kerja, konfigurasi, dan langkah persiapan HIOKI PQ3100. <span class="chip">C3</span></li>
+          <li><b>Menerapkan</b> konsep daya AC (P, Q, S, PF) sebagai dasar interpretasi hasil ukur. <span class="chip">C3–C4</span></li>
+        </ol>
+      </div>
+      <div class="figwrap a" style="--d:.3s">
+        <div class="fig"><img src="assets/yoko_fig03_acwaves.png" alt="Bentuk gelombang sinusoidal, segitiga, dan persegi"></div>
+        <div class="figcap">Tiga bentuk gelombang dasar. Sistem tenaga listrik bekerja dengan gelombang <b>sinusoidal</b> — setiap penyimpangan dari bentuk ideal inilah yang kita sebut <i>masalah kualitas daya</i>.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pg"></div>
+</section>
+
+<!-- ============================ 3 ============================ -->
+<section class="slide" data-foot="Blok A · Konsep Dasar" data-title="Apa itu Kualitas Daya?">
+  <div class="s-head">
+    <div class="s-kicker">Blok A · Konsep Dasar</div>
+    <h2 class="s-title">Apa itu Kualitas Daya?</h2>
+    <p class="s-sub">Sebelum menghitung apa pun: pahami dulu <b>apa yang seharusnya ideal</b> dan <b>apa yang benar-benar terjadi</b>.</p>
+  </div>
+  <div class="s-body">
+    <div class="g2s fill">
+      <div class="col a" style="--d:.06s">
+        <div class="call">
+          <span class="h">Gagasan inti</span>
+          Kualitas daya adalah <b>kesesuaian antara apa yang disalurkan sistem</b>
+          (tegangan &amp; arus) <b>dengan apa yang dibutuhkan peralatan</b>.
+          Jika keduanya cocok, kualitas daya baik. Jika tidak, timbul gangguan.
+        </div>
+        <div class="card">
+          <h4><span class="ic">◈</span> Empat sudut pandang yang harus dibedakan</h4>
+          <div class="g2" style="gap:10px; margin-top:6px">
+            <div class="card pad-sm flat"><div class="chip">1 · Tegangan</div><p style="font-size:12.8px">Bentuk, amplitudo, frekuensi, keseimbangan fasa tegangan suplai.</p></div>
+            <div class="card pad-sm flat"><div class="chip">2 · Arus</div><p style="font-size:12.8px">Bentuk arus yang ditarik beban — menentukan distorsi &amp; rugi.</p></div>
+            <div class="card pad-sm flat"><div class="chip a2">3 · Sisi Suplai</div><p style="font-size:12.8px">Kualitas yang <i>diberikan</i> jaringan ke pelanggan.</p></div>
+            <div class="card pad-sm flat"><div class="chip vi">4 · Sisi Beban</div><p style="font-size:12.8px">Kualitas yang <i>dipengaruhi</i> pelanggan terhadap jaringan.</p></div>
+          </div>
+        </div>
+        <div class="call good">
+          <span class="h">Kondisi ideal</span>
+          Tegangan <b>sinusoidal murni</b>, amplitudo dan frekuensi <b>konstan</b>,
+          ketiga fasa <b>seimbang</b> dan berbeda 120°, tanpa noise, notch, atau lonjakan.
+        </div>
+      </div>
+
+      <div class="col" style="--d:.2s">
+        <div class="figwrap a" style="--d:.2s">
+          <div class="fig"><img src="assets/hioki_wave_anatomy.png" alt="Anatomi gelombang sinusoidal: amplitudo, periode, bentuk gelombang"></div>
+          <div class="figcap"><b>A</b> = amplitudo (nilai puncak) · <b>B</b> = satu periode penuh (1 siklus = 1/f) · <b>C</b> = bentuk gelombang · <b>D</b> = setengah siklus</div>
+        </div>
+        <div class="card a" style="--d:.3s">
+          <h4><span class="ic">∿</span> Gelombang ideal vs. gelombang nyata</h4>
+          <svg class="wave-anim" viewBox="0 0 620 132" style="width:100%; height:96px; display:block">
+            <line x1="0" y1="66" x2="620" y2="66" stroke="var(--line2)" stroke-width="1.2" stroke-dasharray="5 5"/>
+            <path class="trace" d="M0,66 C38,4 76,4 114,66 C152,128 190,128 228,66 C266,4 304,4 342,66 C380,128 418,128 456,66 C494,4 532,4 570,66 C588,94 604,106 620,110"
+                  fill="none" stroke="var(--accent)" stroke-width="4.5" stroke-linecap="round"/>
+            <circle r="6" fill="var(--accent2)">
+              <animateMotion dur="3.2s" repeatCount="indefinite" path="M0,66 C38,4 76,4 114,66 C152,128 190,128 228,66 C266,4 304,4 342,66 C380,128 418,128 456,66 C494,4 532,4 570,66 C588,94 604,106 620,110"/>
+            </circle>
+          </svg>
+          <p style="font-size:12.8px; margin-top:6px">Ujung gelombang di kanan mulai <b>menyimpang</b> dari sinus murni — persis seperti gelombang yang akan Anda lihat di layar PQ3100 pada sistem dengan beban non-linear.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pg"></div>
+</section>
+
+<!-- ============================ 4 ============================ -->
+<section class="slide" data-foot="Blok A · Konsep Dasar" data-title="Definisi Kualitas Daya">
+  <div class="s-head">
+    <div class="s-kicker">Blok A · Konsep Dasar</div>
+    <h2 class="s-title">Definisi Kualitas Daya</h2>
+    <p class="s-sub">Satu definisi tidak cukup — definisi berubah tergantung <b>siapa yang bertanya</b> dan <b>untuk keperluan apa</b>.</p>
+  </div>
+  <div class="s-body">
+    <table class="tbl a" style="--d:.06s">
+      <thead><tr><th style="width:23%">Sumber / Sudut Pandang</th><th style="width:47%">Rumusan</th><th>Konsekuensi praktis</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><b>IEEE 1159</b><br><span class="chip">Praktik pemantauan</span></td>
+          <td>"…<i>the concept of powering and grounding sensitive equipment in a manner that is suitable to the operation of that equipment</i>" — konsep menyuplai dan membumikan peralatan sensitif dengan cara yang sesuai untuk operasi peralatan tersebut.</td>
+          <td>Fokus pada <b>kesesuaian</b>, bukan pada satu angka. Titik berat pada peralatan dan cara pembumiannya.</td>
+        </tr>
+        <tr>
+          <td><b>IEC 61000</b> (EMC)<br><span class="chip">Kompatibilitas</span></td>
+          <td>Kualitas daya = <b>kompatibilitas elektromagnetik</b>: tingkat gangguan di lingkungan (level kompatibilitas) harus lebih rendah daripada tingkat ketahanan peralatan (level imunitas).</td>
+          <td>Menjelaskan mengapa ada beberapa angka untuk "gangguan yang sama" — lihat hierarki di bawah.</td>
+        </tr>
+        <tr>
+          <td><b>Operasional</b><br><span class="chip vi">Untuk praktikum kita</span></td>
+          <td>Ukuran seberapa dekat <b>tegangan</b> dan <b>arus</b> yang diterima peralatan terhadap bentuk idealnya: sinusoidal, amplitudo &amp; frekuensi konstan, fasa seimbang, bebas transient dan distorsi.</td>
+          <td>Definisi inilah yang dapat <b>diukur</b> dengan PQ3100 dan <b>dibandingkan</b> dengan standar.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="g2s fill">
+      <div class="card a" style="--d:.18s">
+        <h4><span class="ic">⇅</span> Hierarki level — mengapa angkanya berbeda-beda</h4>
+        <table class="tbl tight" style="margin-top:4px">
+          <thead><tr><th>Level</th><th>Arti</th><th>Posisi</th></tr></thead>
+          <tbody>
+            <tr><td><b>Kompatibilitas</b></td><td>Tingkat gangguan acuan yang boleh ada di suatu lingkungan</td><td>Acuan tertinggi</td></tr>
+            <tr><td><b>Imunitas</b></td><td>Tingkat gangguan yang masih dapat ditahan peralatan</td><td>Lebih tinggi dari kompatibilitas</td></tr>
+            <tr><td><b>Perencanaan</b></td><td>Tingkat lokal sebagai acuan menetapkan batas emisi instalasi besar</td><td>Umumnya lebih rendah</td></tr>
+            <tr><td><b>Batas emisi</b></td><td>Gangguan yang boleh dipancarkan satu instalasi/peralatan</td><td>Diturunkan dari level perencanaan</td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:12.3px; margin-top:8px; color:var(--fg3)">Sumber: Arrillaga &amp; Watson, <i>Power System Harmonics</i> (2003), §1.3 — REF-5.</p>
+      </div>
+
+      <div class="col a" style="--d:.26s">
+        <div class="call warn">
+          <span class="h">Aturan emas interpretasi</span>
+          Satu angka pengukuran <b>tidak pernah</b> cukup. Kualitas daya selalu harus dinyatakan sebagai
+          <b>parameter + nilai + durasi/agregasi + lokasi + kondisi sistem</b>.
+        </div>
+        <div class="g2" style="gap:12px">
+          <div class="card pad-sm flat"><div class="chip gr">Kualitas SUPLAI</div><p style="font-size:12.8px">Tegangan yang <i>diberikan</i> jaringan. Menjadi tanggung jawab penyedia listrik.</p></div>
+          <div class="card pad-sm flat"><div class="chip ro">Kualitas KONSUMSI</div><p style="font-size:12.8px">Arus yang <i>ditarik</i> beban. Menjadi tanggung jawab pelanggan.</p></div>
+          <div class="card pad-sm flat"><div class="chip">Kualitas PERALATAN</div><p style="font-size:12.8px">Kemampuan peralatan bertahan (imunitas). Tanggung jawab pabrikan.</p></div>
+          <div class="card pad-sm flat"><div class="chip a2">Titik ukur</div><p style="font-size:12.8px">PCC, panel distribusi, terminal peralatan — hasil bisa berbeda di setiap titik.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pg"></div>
+</section>
+
+<!-- ============================ 5 ============================ -->
+<section class="slide" data-foot="Blok A · Konsep Dasar" data-title="Mengapa Kita Mengukur Kualitas Daya?">
+  <div class="s-head">
+    <div class="s-kicker">Blok A · Konsep Dasar</div>
+    <h2 class="s-title">Mengapa Kita Mengukur Kualitas Daya?</h2>
+    <p class="s-sub">Bukan sekadar memenuhi syarat administratif — pengukuran adalah satu-satunya cara <b>membuktikan penyebab</b>.</p>
+  </div>
+  <div class="s-body">
+    <div class="g2s fill">
+      <div class="col a" style="--d:.06s">
+        <div class="card">
+          <h4><span class="ic">▲</span> Empat pemicu meningkatnya masalah kualitas daya</h4>
+          <ol class="nl" style="margin-top:6px">
+            <li><b>Pertumbuhan perangkat elektronika daya</b> — inverter, SMPS, VFD, LED driver. Beban non-linear menghasilkan distorsi dan supraharmonik.</li>
+            <li><b>Beban tidak seimbang makin besar</b> — tungku peleburan, rectifier daya besar, las busur.</li>
+            <li><b>Distribusi makin kompleks</b> — pembangkit tersebar (PLTS/PLTB) yang tersambung ke jaringan, pengisian kendaraan listrik, penyimpanan energi.</li>
+            <li><b>Batas antara penyebab suplai dan beban makin kabur</b> — gangguan muncul di peralatan, tetapi asalnya bisa dari mana saja.</li>
+          </ol>
+        </div>
+        <div class="card">
+          <h4><span class="ic">✕</span> Konsekuensi nyata bila tidak dikelola</h4>
+          <ul class="bl tight">
+            <li><b>Harmonisa</b> → reaktor pada kapasitor kompensasi terbakar, kapasitor rusak, trafo &amp; motor panas berlebih.</li>
+            <li><b>Impulse noise &amp; penurunan tegangan</b> → sistem kontrol berbasis komputer berhenti / reset.</li>
+            <li><b>Rugi energi</b> meningkat → biaya listrik naik tanpa produksi bertambah.</li>
+            <li><b>Umur aset</b> memendek → biaya pemeliharaan dan penggantian naik.</li>
+            <li><b>Risiko K3</b> meningkat → panas berlebih pada kabel dan sambungan.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col" style="--d:.18s">
+        <div class="figwrap a" style="--d:.18s">
+          <div class="fig"><img src="assets/hioki_case_powerfluct.jpg" alt="Tren daya dan tegangan hasil pengukuran kualitas daya"></div>
+          <div class="figcap">Tren tegangan &amp; daya hasil perekaman analyzer. Dari tren inilah kita bisa <b>menentukan apakah penyebab berada di dalam atau di luar instalasi</b>.</div>
+        </div>
+        <div class="call idea a" style="--d:.28s">
+          <span class="h">Pertanyaan yang harus dijawab pengukuran</span>
+          Apakah masalahnya berasal dari <b>sistem penyedia (PLN)</b> atau dari <b>sistem pelanggan</b>?
+          Tanpa data terukur, perdebatan ini tidak dapat diselesaikan — dan penyelesaian sengketa inilah
+          alasan utama lahirnya standar pengukuran seperti <b>IEC 61000-4-30</b>.
+        </div>
+      </div>
+    </div>
+
+    <div class="g4 a" style="--d:.36s">
+      <div class="card pad-sm flat"><div class="chip">Ekonomi</div><p style="font-size:12.8px">Menghindari berhentinya produksi dan biaya perbaikan.</p></div>
+      <div class="card pad-sm flat"><div class="chip gr">Teknis</div><p style="font-size:12.8px">Menemukan akar penyebab, bukan hanya gejalanya.</p></div>
+      <div class="card pad-sm flat"><div class="chip a2">Regulasi</div><p style="font-size:12.8px">Memenuhi kewajiban mutu daya &amp; batas emisi.</p></div>
+      <div class="card pad-sm flat"><div class="chip ro">K3 &amp; Keandalan</div><p style="font-size:12.8px">Mencegah panas berlebih, kebakaran, dan kegagalan aset.</p></div>
+    </div>
+  </div>
+  <div class="pg"></div>
+</section>
+
+<!-- ============================ 6 ============================ -->
+<section class="slide" data-foot="Blok A · Konsep Dasar" data-title="Fenomena Kualitas Daya &amp; Dampaknya">
+  <div class="s-head">
+    <div class="s-kicker">Blok A · Konsep Dasar</div>
+    <h2 class="s-title">Fenomena Kualitas Daya &amp; Dampaknya</h2>
+    <p class="s-sub">Klik setiap kartu untuk membuka penyebab dan dampaknya. Klasifikasi mengikuti <b>IEEE 1159</b> dan ringkasan HIOKI.</p>
+  </div>
+  <div class="s-body">
+    <div class="g4 fill a" style="--d:.06s">
+      <div class="card phen" onclick="this.classList.toggle('open')">
+        <span class="ic">📉</span><h4>Voltage Dip (Sag)</h4>
+        <p style="font-size:12.3px">Penurunan tegangan sesaat.</p>
+        <div class="det"><b>Penyebab:</b> sambaran petir, hubung singkat ke tanah, arus inrush saat motor besar start.<br><b>Dampak:</b> peralatan stop/reset, lampu mati, motor berubah kecepatan, motor/generator sinkron kehilangan sinkronisasi.</div>
+      </div>
+      <div class="card phen" onclick="this.classList.toggle('open')">
+        <span class="ic">📈</span><h4>Voltage Swell (Surge)</h4>
+        <p style="font-size:12.3px">Kenaikan tegangan sesaat.</p>
+        <div class="det"><b>Penyebab:</b> petir, pembukaan/penutupan sirkuit, switching bank kapasitor, hubung tanah satu fasa, pelepasan beban besar, sambungan PLTS.<br><b>Dampak:</b> kerusakan catu daya peralatan, reset mendadak.</div>
+      </div>
+      <div class="card phen" onclick="this.classList.toggle('open')">
+        <span class="ic">⚡</span><h4>Transient Voltage</h4>
+        <p style="font-size:12.3px">Perubahan tegangan sangat cepat (impulse).</p>
+        <div class="det"><b>Penyebab:</b> petir, masalah kontak, penutupan breaker/relay.<br><b>Dampak:</b> kerusakan atau reset peralatan di dekat titik kejadian karena tegangan puncaknya tinggi.</div>
+      </div>
+      <div class="card phen" onclick="this.classList.toggle('open')">
+        <span class="ic">⏻</span><h4>Interruption</h4>
+        <p style="font-size:12.3px">Pemutusan suplai (sesaat / singkat / lama).</p>
+        <div class="det"><b>Penyebab:</b> gangguan jaringan, breaker trip akibat hubung singkat, gangguan petir.<br><b>Dampak:</b> peralatan berhenti; UPS dapat menutupi sebagian, tetapi dapat pula menjadi sumber gangguan baru.</div>
+      </div>
+      <div class="card phen" onclick="this.classList.toggle('open')">
+        <span class="ic">💡</span><h4>Flicker</h4>
+        <p style="font-size:12.3px">Fluktuasi tegangan berulang.</p>
+        <div class="det"><b>Penyebab:</b> tungku busur, las listrik, beban kendali thyristor, dan kini pengaturan deteksi gagal suplai pada power conditioner PLTS.<br><b>Dampak:</b> kedipan lampu, peralatan malafungsi, rasa tidak nyaman bagi manusia.</div>
+      </div>
+      <div class="card phen" onclick="this.classList.toggle('open')">
+        <span class="ic">〰</span><h4>Harmonisa</h4>
+        <p style="font-size:12.3px">Distorsi periodik kelipatan bilangan bulat f<sub>dasar</sub>.</p>
+        <div class="det"><b>Penyebab:</b> perangkat semikonduktor pada catu daya peralatan (rectifier, VFD, SMPS, inverter).<br><b>Dampak:</b> panas &amp; noise motor/trafo, reaktor kapasitor kompensasi terbakar, rugi meningkat.</div>
+      </div>
+      <div class="card phen" onclick="this.classList.toggle('open')">
+        <span class="ic">≋</span><h4>Interharmonisa</h4>
+        <p style="font-size:12.3px">Komponen bukan kelipatan bilangan bulat.</p>
+        <div class="det"><b>Penyebab:</b> konverter frekuensi statis, cycloconverter, sistem Scherbius, motor induksi, las, tungku busur.<br><b>Dampak:</b> pergeseran titik nol gelombang tegangan → kerusakan, malafungsi, degradasi peralatan.</div>
+      </div>
+      <div class="card phen" onclick="this.classList.toggle('open')">
+        <span class="ic">⚖</span><h4>Unbalance</h4>
+        <p style="font-size:12.3px">Ketidakseimbangan antar fasa.</p>
+        <div class="det"><b>Penyebab:</b> beban antar fasa tidak merata, peralatan beroperasi sebagian, distorsi gelombang, penurunan tegangan, tegangan urutan negatif.<br><b>Dampak:</b> motor kehilangan torsi, panas, noise; trafo panas; trip pada breaker 3E; rugi pada kapasitor.</div>
+      </div>
+    </div>
+
+    <div class="g2s" style="flex:0 0 auto">
+      <div class="card pad-sm flat a" style="--d:.2s">
+        <div class="row" style="gap:14px; align-items:center">
+          <div class="fig" style="flex:0 0 46%; padding:6px"><img src="assets/hioki_wave_distortion.png" alt="Gelombang terdistorsi"></div>
+          <div style="flex:1 1 auto">
+            <div class="chip a2">Contoh</div>
+            <p style="font-size:12.8px; margin-top:5px">Gelombang tegangan yang <b>tidak sinusoidal lagi</b> akibat distorsi. Inilah tampilan yang akan Anda lihat pada layar <b>WAVE</b> PQ3100 ketika beban non-linear mendominasi.</p>
+          </div>
+        </div>
+      </div>
+      <div class="card pad-sm flat a" style="--d:.26s">
+        <div class="row" style="gap:14px; align-items:center">
+          <div class="fig" style="flex:0 0 52%; padding:6px"><img src="assets/yoko_harmonics.png" alt="Penjumlahan gelombang dasar, harmonisa ke-3, dan ke-5"></div>
+          <div style="flex:1 1 auto">
+            <div class="chip vi">Mekanisme</div>
+            <p style="font-size:12.8px; margin-top:5px">Gelombang dasar + harmonisa ke-3 + harmonisa ke-5 = <b>gelombang terdistorsi</b>. Distorsi bukan gelombang baru — ia adalah <i>jumlah</i> dari komponen-komponennya.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pg"></div>
+</section>
+
+<!-- ============================ 7 ============================ -->
+<section class="slide" data-foot="Blok A · Konsep Dasar" data-title="Bagaimana Kita Mengukur Kualitas Daya?">
+  <div class="s-head">
+    <div class="s-kicker">Blok A · Konsep Dasar</div>
+    <h2 class="s-title">Bagaimana Kita Mengukur Kualitas Daya?</h2>
+    <p class="s-sub">Rantai pengukuran lengkap: dari fenomena fisik sampai keputusan rekayasa.</p>
+  </div>
+  <div class="s-body">
+    <div class="g5 a" style="--d:.05s">
+      <div class="step" style="flex-direction:column; align-items:flex-start; gap:4px"><div class="n">1</div><div class="t">Fenomena</div><div class="d">Tegangan &amp; arus pada titik ukur</div></div>
+      <div class="step" style="flex-direction:column; align-items:flex-start; gap:4px"><div class="n">2</div><div class="t">Sensor</div><div class="d">Voltage cord, clamp CT, VT/CT</div></div>
+      <div class="step" style="flex-direction:column; align-items:flex-start; gap:4px"><div class="n">3</div><div class="t">Instrumen</div><div class="d">PQ analyzer (PQ3100) — sampling &amp; kuantisasi</div></div>
+      <div class="step" style="flex-direction:column; align-items:flex-start; gap:4px"><div class="n">4</div><div class="t">Agregasi</div><div class="d">200 ms / 3 s / 10 menit / 2 jam</div></div>
+      <div class="step" style="flex-direction:column; align-items:flex-start; gap:4px"><div class="n">5</div><div class="t">Rekaman</div><div class="d">TIME PLOT, event, waveform, SD card</div></div>
+    </div>
+    <div class="g5 a" style="--d:.14s">
+      <div class="step" style="flex-direction:column; align-items:flex-start; gap:4px"><div class="n">6</div><div class="t">Analisis</div><div class="d">PQ ONE / perangkat lunak</div></div>
+      <div class="step" style="flex-direction:column; align-items:flex-start; gap:4px"><div class="n">7</div><div class="t">Bandingkan</div><div class="d">Terhadap standar &amp; kondisi asesmen</div></div>
+      <div class="step" style="flex-direction:column; align-items:flex-start; gap:4px"><div class="n">8</div><div class="t">Interpretasi</div><div class="d">Kaitkan dengan kejadian nyata</div></div>
+      <div class="step" style="flex-direction:column; align-items:flex-start; gap:4px"><div class="n">9</div><div class="t">Rekomendasi</div><div class="d">Tindakan perbaikan yang terukur</div></div>
+      <div class="step" style="flex-direction:column; align-items:flex-start; gap:4px"><div class="n">10</div><div class="t">Kesimpulan</div><div class="d">Jawaban atas pertanyaan awal</div></div>
+    </div>
+
+    <div class="g2s fill">
+      <div class="figwrap a" style="--d:.22s">
+        <div class="fig"><img src="assets/hioki_system_diagram.jpg" alt="Diagram sistem pengukuran kualitas daya HIOKI"></div>
+        <div class="figcap">Konfigurasi sistem: instrumen — sensor arus &amp; tegangan — penyimpanan (SD) — komputer &amp; perangkat lunak analisis.</div>
+      </div>
+      <div class="col a" style="--d:.3s">
+        <div class="card">
+          <h4><span class="ic">⚙</span> Tiga syarat agar hasil pengukuran SAH</h4>
+          <ul class="bl tight">
+            <li><b>Wiring benar</b> — mode pengkabelan sesuai sistem, arah panah clamp menuju beban, hanya satu konduktor per clamp.</li>
+            <li><b>Sensor cocok</b> — rentang arus, kelas akurasi, dan lebar pita sensor sesuai bentuk gelombang yang diukur.</li>
+            <li><b>Waktu &amp; agregasi benar</b> — jam instrumen akurat, interval agregasi sesuai standar acuan.</li>
+          </ul>
+        </div>
+        <div class="call warn">
+          <span class="h">Poin terpenting untuk dibawa ke industri</span>
+          <b>Kelas pengukuran adalah sifat dari SELURUH konfigurasi</b>, bukan sekadar label pada instrumen.
+          Instrumen Class A yang dikabel salah, memakai sensor tidak sesuai, atau jamnya tidak terverifikasi
+          <b>tidak menghasilkan pengukuran Class A</b>.
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pg"></div>
+</section>
+
+<!-- ============================ 8 ============================ -->
+<section class="slide" data-foot="Blok A · Standar" data-title="Peta Standar Kualitas Daya">
+  <div class="s-head">
+    <div class="s-kicker">Blok A · Standar &amp; Regulasi</div>
+    <h2 class="s-title">Peta Standar Kualitas Daya</h2>
+    <p class="s-sub">Langkah pertama dan paling sering dilupakan: bedakan standar <b>CARA MENGUKUR</b> dari standar <b>BATASAN</b>.</p>
+  </div>
+  <div class="s-body">
+    <table class="tbl a" style="--d:.06s">
+      <thead><tr><th style="width:16%">Standar</th><th style="width:30%">Mengatur apa</th><th style="width:14%">Menetapkan batasan?</th><th>Peran dalam kuliah ini</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><b>IEC 61000-4-30</b><br><span class="chip">Internasional</span></td>
+          <td><b>Cara mengukur</b> kualitas daya pada sistem AC: metode pengukuran, algoritma, akurasi jam, kelas instrumen (A / S)</td>
+          <td><span class="no">Tidak</span> — hanya menetapkan metode</td>
+          <td>Dasar validitas <b>seluruh</b> pengukuran praktikum. Menentukan apakah hasil Anda dapat dipercaya.</td>
+        </tr>
+        <tr>
+          <td><b>IEC 61000-4-7</b><br><span class="chip">Internasional</span></td>
+          <td><b>Cara mengukur</b> harmonisa &amp; interharmonisa: jendela pengukuran, resolusi, pengelompokan orde</td>
+          <td><span class="no">Tidak</span></td>
+          <td>Menjelaskan bagaimana angka harmonisa yang tampil di layar PQ3100 sebenarnya dibentuk.</td>
+        </tr>
+        <tr>
+          <td><b>IEC 61000-4-15</b><br><span class="chip">Internasional</span></td>
+          <td>Spesifikasi fungsional &amp; desain <b>flickermeter</b> — alat yang menghasilkan P<sub>st</sub> dan P<sub>lt</sub></td>
+          <td><span class="no">Tidak</span></td>
+          <td>Dasar pengukuran flicker. Tanpa standar ini, angka flicker antar pabrikan tidak dapat dibandingkan.</td>
+        </tr>
+        <tr>
+          <td><b>EN 50160</b><br><span class="chip a2">Eropa · CENELEC</span></td>
+          <td><b>Karakteristik tegangan</b> yang disalurkan jaringan distribusi publik kepada pelanggan pada kondisi operasi normal</td>
+          <td><span class="ok">Ya</span> — pada parameter tegangan</td>
+          <td>Model metodologi <b>survei jangka panjang</b> (≥ 1 minggu). Menjadi acuan mode EN50160 pada analyzer.</td>
+        </tr>
+        <tr>
+          <td><b>IEEE 1159</b><br><span class="chip vi">IEEE</span></td>
+          <td><b>Praktik pemantauan</b> kualitas daya: klasifikasi fenomena, terminologi, tata cara pemantauan</td>
+          <td><span class="no">Tidak</span></td>
+          <td>Sumber resmi <b>terminologi</b> saat dua buku berbeda pendapat. Acuan penamaan fenomena pada slide 6.</td>
+        </tr>
+        <tr>
+          <td><b>IEEE 519</b><br><span class="chip vi">IEEE</span></td>
+          <td><b>Pengendalian harmonisa</b> pada sistem tenaga: batas distorsi arus di titik PCC dan batas distorsi tegangan</td>
+          <td><span class="ok">Ya</span> — arus &amp; tegangan</td>
+          <td>Contoh paling jelas bahwa batas bergantung pada <b>kondisi sistem</b> (rasio I<sub>sc</sub>/I<sub>L</sub>), bukan angka tunggal.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="call bad a" style="--d:.2s">
+      <span class="h">⚠ Disiplin sitasi — wajib dipatuhi di seluruh mata kuliah ini</span>
+      Nilai batas numerik (persentase, durasi, orde harmonisa, indeks) <b>tidak boleh</b> dikutip dari ingatan
+      atau dari ringkasan buku teks. Nilai harus diambil langsung dari <b>edisi dokumen yang berlaku</b>.
+      Setiap kali sebuah nilai belum diverifikasi dari dokumen aslinya, ditandai
+      <span class="mono chip ro">BELUM DIVERIFIKASI - E6</span>.
+      Untuk konteks Indonesia, dokumen acuan adalah <b>SPLN D5.004-1:2012</b> (harmonisa, flicker, ketidakseimbangan tegangan),
+      <b>SPLN 1:1995</b>, <b>Permen ESDM</b> tentang Tingkat Mutu Pelayanan beserta perubahannya, dan <b>SNI 0225:2011 (PUIL)</b>.
+    </div>
+  </div>
+  <div class="pg"></div>
+</section>
+
+<!-- ============================ 9 ============================ -->
+<section class="slide" data-foot="Blok A · Standar" data-title="IEC 61000-4-30, 4-7, 4-15">
+  <div class="s-head">
+    <div class="s-kicker">Blok A · Standar &amp; Regulasi</div>
+    <h2 class="s-title">IEC 61000-4-30 · 4-7 · 4-15</h2>
+    <p class="s-sub">Keluarga standar yang menentukan <b>bagaimana</b> angka kualitas daya dihasilkan.</p>
+  </div>
+  <div class="s-body">
+    <div class="g2s fill">
+      <div class="col a" style="--d:.06s">
+        <div class="card">
+          <h4><span class="ic">◉</span> IEC 61000-4-30 — 10 fenomena yang tercakup</h4>
+          <p style="font-size:12.8px; margin-bottom:7px">Cakupan dibatasi pada fenomena yang <b>menyebar di sistem suplai</b>:</p>
+          <div class="g2" style="gap:6px 14px">
+            <ul class="bl tight" style="gap:5px">
+              <li>Frekuensi</li>
+              <li>Amplitudo tegangan suplai (RMS)</li>
+              <li>Flicker</li>
+              <li>Dip / swell / interruption</li>
+              <li>Tegangan transient</li>
+            </ul>
+            <ul class="bl tight" style="gap:5px">
+              <li>Ketidakseimbangan tegangan</li>
+              <li>Tegangan harmonisa</li>
+              <li>Tegangan interharmonisa</li>
+              <li>Sinyal pembawa pada tegangan suplai</li>
+              <li>Fluktuasi tegangan cepat</li>
+            </ul>
+          </div>
+        </div>
+        <div class="card">
+          <h4><span class="ic">⌁</span> IEC 61000-4-7 &amp; IEC 61000-4-15</h4>
+          <ul class="bl tight">
+            <li><b>IEC 61000-4-7</b> — panduan umum pengukuran <b>harmonisa dan interharmonisa</b> serta instrumennya. Menetapkan jendela pengukuran (10 siklus @50 Hz / 12 siklus @60 Hz), resolusi spektral, dan aturan pengelompokan orde. <b>Inilah alasan angka harmonisa di layar tidak boleh dibandingkan sembarangan</b> bila metode agregasinya berbeda.</li>
+            <li><b>IEC 61000-4-15</b> — spesifikasi fungsional dan desain <b>flickermeter</b>. Menghasilkan <b>P<sub>st</sub></b> (evaluasi jangka pendek, umumnya 10 menit) dan <b>P<sub>lt</sub></b> (jangka panjang, umumnya 2 jam).</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col a" style="--d:.18s">
+        <table class="tbl" style="flex:0 0 auto">
+          <thead><tr><th style="width:22%">Kelas</th><th>Peruntukan</th><th style="width:38%">Yang ditetapkan</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><b style="color:var(--green)">Class A</b></td>
+              <td>Pengukuran presisi: aplikasi <b>kontraktual</b>, penyelesaian sengketa, verifikasi kesesuaian standar</td>
+              <td>Fungsi &amp; akurasi <b>plus</b> algoritma pengukuran, metode perhitungan RMS, metode pengolahan data, dan <b>akurasi jam</b></td>
+            </tr>
+            <tr>
+              <td><b style="color:var(--accent2)">Class S</b></td>
+              <td><b>Survei kualitatif</b>, troubleshooting, dan aplikasi lain yang tidak menuntut ketidakpastian rendah</td>
+              <td>Persyaratan yang disederhanakan</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="g2" style="gap:12px">
+          <div class="card pad-sm">
+            <div class="chip gr">PQ3198</div>
+            <p style="font-size:13.2px; margin-top:5px">Tersertifikasi <b>Class A</b> — untuk pekerjaan kontraktual dan verifikasi standar.</p>
+          </div>
+          <div class="card pad-sm">
+            <div class="chip a2">PQ3100 — alat praktikum kita</div>
+            <p style="font-size:13.2px; margin-top:5px">Menyatakan kesesuaian <b>Class S</b> menurut pernyataan resmi pabrikan. Sangat memadai untuk <b>survei &amp; troubleshooting</b> di laboratorium.</p>
+          </div>
+        </div>
+
+        <div class="call idea">
+          <span class="h">Konsekuensi untuk laporan praktikum</span>
+          Karena PQ3100 adalah instrumen <b>Class S</b>, hasil pengukuran kita <b>sah</b> untuk
+          survei kualitatif, analisis tren, dan pembelajaran diagnosis. Tetapi hasil tersebut
+          <b>tidak boleh</b> dipresentasikan sebagai pengukuran kontraktual atau sebagai bukti
+          penyelesaian sengketa. Menyatakan batas ini secara jujur adalah bagian dari kompetensi
+          seorang teknisi — bukan kelemahan.
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pg"></div>
+</section>
+
+<!-- ============================ 10 ============================ -->
+<section class="slide" data-foot="Blok A · Standar" data-title="EN 50160, IEEE 1159, IEEE 519 &amp; Konteks Indonesia">
+  <div class="s-head">
+    <div class="s-kicker">Blok A · Standar &amp; Regulasi</div>
+    <h2 class="s-title">EN 50160 · IEEE 1159 · IEEE 519</h2>
+    <p class="s-sub">Tiga standar yang paling sering disalahpahami, ditambah kerangka regulasi Indonesia.</p>
+  </div>
+  <div class="s-body">
+    <div class="g3 fill a" style="--d:.06s">
+      <div class="card">
+        <div class="tag">EN 50160</div>
+        <h4>Karakteristik Tegangan</h4>
+        <p style="font-size:13.2px">Diterbitkan <b>CENELEC</b>. Mengatur karakteristik <b>tegangan</b> pada terminal pelanggan di jaringan distribusi publik LV &amp; MV, pada <b>kondisi operasi normal</b>.</p>
+        <ul class="bl tight" style="margin-top:8px">
+          <li>Standar <b>tegangan</b> — bukan batas emisi pelanggan</li>
+          <li>Model <b>survei jangka panjang</b>: lazimnya minimal 1 minggu</li>
+          <li>Menjadi acuan mode <b>EN50160</b> pada analyzer</li>
+        </ul>
+        <div class="call warn" style="margin-top:9px; font-size:12.3px">
+          <b>Peringatan yurisdiksi:</b> jangan terapkan batas EN 50160 pada instalasi Indonesia
+          seolah-olah mengikat. Gunakan sebagai <b>model metodologi</b> atau pembanding.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="tag">IEEE 1159</div>
+        <h4>Praktik Pemantauan</h4>
+        <p style="font-size:13.2px">Rekomendasi praktik untuk <b>memantau</b> kualitas daya: klasifikasi fenomena, terminologi, dan tata cara pemantauan.</p>
+        <ul class="bl tight" style="margin-top:8px">
+          <li>Sumber <b>klasifikasi fenomena</b> yang dipakai luas: transient, variasi RMS jangka pendek &amp; panjang, ketidakseimbangan, distorsi gelombang, fluktuasi tegangan, variasi frekuensi</li>
+          <li>Menjadi <b>otoritas terminologi</b> ketika dua sumber berbeda istilah</li>
+          <li><b>Bukan</b> standar batasan — tidak menetapkan limit</li>
+        </ul>
+        <div class="call good" style="margin-top:9px; font-size:12.3px">
+          Gunakan IEEE 1159 untuk menjawab pertanyaan "ini fenomena apa?" — bukan "ini lulus atau tidak?".
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="tag">IEEE 519</div>
+        <h4>Pengendalian Harmonisa</h4>
+        <p style="font-size:13.2px">Menetapkan dua jenis batas yang <b>sangat berbeda</b>:</p>
+        <table class="tbl tight" style="margin-top:7px">
+          <thead><tr><th>Jenis batas</th><th>Bergantung pada</th></tr></thead>
+          <tbody>
+            <tr><td><b>Distorsi arus</b> (di titik PCC)</td><td>Rasio arus hubung singkat maksimum terhadap arus beban maksimum (<b>I<sub>sc</sub>/I<sub>L</sub></b>)</td></tr>
+            <tr><td><b>Distorsi tegangan</b> (di PCC)</td><td>Nilai tetap menurut level tegangan bus</td></tr>
+          </tbody>
+        </table>
+        <div class="call bad" style="margin-top:9px; font-size:12.3px">
+          <b>Jebakan klasik:</b> membandingkan <b>THD arus</b> hasil ukur dengan batas <b>tegangan</b>,
+          atau membandingkan THD dengan batas <b>TDD</b>. Keduanya kesalahan yang membatalkan analisis.
+        </div>
+      </div>
+    </div>
+
+    <div class="card a" style="--d:.2s">
+      <h4><span class="ic">🇮🇩</span> Kerangka regulasi Indonesia — empat lapis yang saling melengkapi</h4>
+      <div class="g4" style="gap:11px; margin-top:7px">
+        <div class="card pad-sm flat">
+          <div class="chip ro">Lapis 1 · Regulasi</div>
+          <p style="font-size:12.3px; margin-top:5px"><b>Permen ESDM</b> tentang Tingkat Mutu Pelayanan (2017, diubah 2019 dan 2025) + <b>Kepmen ESDM</b> yang memuat angka tingkat mutu pelayanan. <i>Mengikat secara hukum.</i></p>
+        </div>
+        <div class="card pad-sm flat">
+          <div class="chip a2">Lapis 2 · Standar PLN</div>
+          <p style="font-size:12.3px; margin-top:5px"><b>SPLN D5.004-1:2012</b> — harmonisa, flicker, ketidakseimbangan tegangan. <b>SPLN 1:1995</b> — tegangan standar. <i>Mengikat melalui perjanjian sambungan.</i></p>
+        </div>
+        <div class="card pad-sm flat">
+          <div class="chip">Lapis 3 · SNI</div>
+          <p style="font-size:12.3px; margin-top:5px"><b>SNI 0225:2011 (PUIL 2011)</b> + amandemen — instalasi, penampang konduktor, jatuh tegangan, proteksi, pembumian. <i>Acuan praktik instalasi.</i></p>
+        </div>
+        <div class="card pad-sm flat">
+          <div class="chip vi">Lapis 4 · Internasional</div>
+          <p style="font-size:12.3px; margin-top:5px"><b>IEC 61000-x</b>, <b>IEEE 1159/519</b>, <b>EN 50160</b> — dasar teknis yang menjadi rujukan lapis di atasnya.</p>
+        </div>
+      </div>
+      <p style="font-size:12.3px; color:var(--fg3); margin-top:9px">
+        <b>Menjawab "batas mana yang berlaku?" bergantung pada siapa yang bertanya dan untuk keperluan apa:</b>
+        menilai mutu suplai PLN → kerangka Permen/Kepmen · menilai emisi pelanggan ke jaringan PLN → SPLN D5.004-1:2012 ·
+        menilai desain instalasi sendiri → SNI/PUIL · menilai peralatan sebelum dijual → IEC 61000-3-x ·
+        menilai keabsahan pengukuran → IEC 61000-4-30.
+      </p>
+    </div>
+  </div>
+  <div class="pg"></div>
+</section>
+
+<!-- ============================ 11 ============================ -->
+<section class="slide" data-foot="Blok B · Instrumen &amp; Pengukuran" data-title="Product Overview — HIOKI PQ3100">
+  <div class="s-head">
+    <div class="s-kicker">Blok B · Instrumen</div>
+    <h2 class="s-title">Product Overview — HIOKI PQ3100</h2>
+    <p class="s-sub">Instrumen yang akan dipakai di praktikum: <b>Power Quality Logger &amp; Analyzer — Standard</b>, dengan panduan pengaturan langsung di layar.</p>
+  </div>
+  <div class="s-body">
+    <div class="g2s fill">
+      <div class="col" style="--d:.05s">
+        <div class="figwrap a" style="--d:.05s">
+          <div class="fig" style="padding:0; background:transparent; border:none; max-height:338px">
+            <img src="assets/hioki_pq3100_closeup.jpg" alt="HIOKI PQ3100 dengan clamp sensor terpasang pada panel">
+          </div>
+          <div class="figcap">PQ3100 terpasang pada panel aktif dengan clamp sensor arus dan voltage cord — konfigurasi nyata di lapangan.</div>
+        </div>
+      </div>
+
+      <div class="col a" style="--d:.16s">
+        <table class="tbl tight" style="flex:0 0 auto">
+          <thead><tr><th style="width:38%">Parameter</th><th>Spesifikasi PQ3100</th></tr></thead>
+          <tbody>
+            <tr><td>Kanal pengukuran</td><td><b>4 kanal</b> (CH1–CH4)</td></tr>
+            <tr><td>Frekuensi dasar / lebar pita</td><td>40–70 Hz / ≈ 10 kHz</td></tr>
+            <tr><td>Harmonisa</td><td>Orde <b>1–30</b> (tegangan &amp; arus) + interharmonisa</td></tr>
+            <tr><td>Kelas IEC 61000-4-30</td><td><b style="color:var(--accent2)">Class S</b></td></tr>
+            <tr><td>Keamanan</td><td><b>CAT III 1000 V / CAT IV 600 V</b></td></tr>
+            <tr><td>Antarmuka</td><td>USB · Ethernet (LAN) · SD card · RS-232C · terminal event input</td></tr>
+            <tr><td>Perangkat lunak</td><td><b>PQ ONE</b> (analisis lanjutan, gratis) · Gennect One (LAN)</td></tr>
+            <tr><td>Catu daya</td><td>AC adapter + Battery Pack</td></tr>
+          </tbody>
+        </table>
+
+        <div class="call good" style="font-size:12.8px">
+          <b>Deteksi simultan:</b> dip · swell · interruption · flicker · unbalance · inrush · fluktuasi frekuensi · transient · pengukuran DC.
+        </div>
+      </div>
+    </div>
+
+    <div class="card a" style="--d:.28s">
+      <h4><span class="ic">⇄</span> PQ3100 vs PQ3198 — apa yang berbeda, dan mengapa itu penting</h4>
+      <table class="tbl tight" style="margin-top:5px">
+        <thead><tr><th style="width:34%">Fitur / kemampuan</th><th style="width:12%">PQ3100 (Standard)</th><th style="width:12%">PQ3198 (Advanced)</th><th>Catatan untuk praktikum</th></tr></thead>
+        <tbody>
+          <tr><td>Kelas IEC 61000-4-30</td><td><b>Class S</b></td><td><b>Class A</b></td><td>Menentukan jenis pekerjaan yang boleh dilakukan.</td></tr>
+          <tr><td>Harmonisa 0–50 / elemen DC · orde tinggi 2–80 kHz</td><td>Orde <b>1–30</b></td><td>Orde 0–50 + 2–80 kHz</td><td>Untuk beban SMPS/inverter modern, PQ3198 lebih unggul.</td></tr>
+          <tr><td>Sampling cepat untuk tegangan transient</td><td><span class="no">—</span></td><td><span class="ok">✓</span></td><td>Transient tetap terekam sebagai event, resolusi puncaknya lebih rendah.</td></tr>
+          <tr><td>Isolasi antar kanal CH1–CH3 dan CH4</td><td><span class="no">Tidak terisolasi</span></td><td><span class="ok">Terisolasi</span></td><td>Berpengaruh saat mengukur sistem + catu daya DC.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="pg"></div>
+</section>
+
+<!-- ============================ 12 ============================ -->
+<section class="slide" data-foot="Blok B · Instrumen" data-title="Bagian, Terminal &amp; Sensor PQ3100">
+  <div class="s-head">
+    <div class="s-kicker">Blok B · Instrumen</div>
+    <h2 class="s-title">Bagian, Terminal &amp; Sensor</h2>
+    <p class="s-sub">Kenali setiap tombol sebelum menyentuh panel: <b>satu tombol yang salah</b> dapat menghapus data pengukuran berhari-hari.</p>
+  </div>
+  <div class="s-body">
+    <div class="g2s fill">
+      <div class="col" style="--d:.05s">
+        <div class="figwrap a" style="--d:.05s">
+          <div class="fig" style="padding:0; background:transparent; border:none">
+            <img src="assets/hioki_pq3100_panel.jpg" alt="Panel depan PQ3100: layar, tombol menu, dan tombol START/STOP">
+          </div>
+          <div class="figcap">Panel depan PQ3100: layar warna, tombol menu (MONITOR / TREND / EVENT / WIRING / SETUP / FILE), pad tombol panah + ENTER, ESC, COPY, dan tombol START/STOP.</div>
+        </div>
+      </div>
+
+      <div class="col a" style="--d:.16s">
+        <table class="tbl tight" style="flex:0 0 auto">
+          <thead><tr><th style="width:26%">Tombol</th><th>Fungsi</th></tr></thead>
+          <tbody>
+            <tr><td><b>MONITOR</b></td><td>Menampilkan nilai sesaat (instantaneous) &amp; bentuk gelombang</td></tr>
+            <tr><td><b>TREND</b></td><td>Menampilkan data pengukuran sebagai grafik deret waktu (TIME PLOT)</td></tr>
+            <tr><td><b>EVENT</b></td><td>Menampilkan daftar event yang terekam</td></tr>
+            <tr><td><b>WIRING</b></td><td>Menampilkan/mengubah pengaturan mode pengkabelan &amp; diagram koneksi</td></tr>
+            <tr><td><b>SETUP</b></td><td>Menampilkan pengaturan instrumen (setara layar SYSTEM)</td></tr>
+            <tr><td><b>FILE</b></td><td>Operasi file pada SD card: load / save / view / delete / format</td></tr>
+            <tr><td><b>MANU/EVENT</b></td><td>Membuat event secara manual — merekam "snapshot" saat tidak ada gangguan terdeteksi</td></tr>
+            <tr><td><b>Pad panah + ENTER<br>ESC · COPY</b></td><td>Memilih &amp; mengonfirmasi pengaturan · membatalkan perubahan · menyimpan gambar layar</td></tr>
+            <tr><td><b>START / STOP</b></td><td>Memulai dan menghentikan perekaman (LED hijau: berkedip = siaga, menyala tetap = merekam)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="g3 a" style="--d:.28s">
+      <div class="card pad-sm">
+        <div class="chip">Terminal tegangan</div>
+        <p style="font-size:12.8px; margin-top:5px">Masukan <b>U1 · U2 · U3 · N</b>. Jumlah kabel yang dipasang bergantung pada mode pengkabelan yang dipilih.</p>
+      </div>
+      <div class="card pad-sm">
+        <div class="chip a2">Terminal arus</div>
+        <p style="font-size:12.8px; margin-top:5px">Masukan <b>CH1 · CH2 · CH3 · CH4</b> untuk clamp sensor. Gunakan <b>jenis sensor yang sama</b> pada setiap fasa untuk pengukuran daya multifasa.</p>
+      </div>
+      <div class="card pad-sm">
+        <div class="chip vi">Terminal lain</div>
+        <p style="font-size:12.8px; margin-top:5px">Masukan <b>external event</b>, konektor <b>AC adapter</b>, <b>USB</b>, <b>LAN</b>, slot <b>SD card</b>, dan tombol <b>POWER</b>.</p>
+      </div>
+    </div>
+
+    <div class="card a" style="--d:.36s">
+      <h4><span class="ic">⌇</span> Pemilihan clamp sensor — sesuaikan dengan rentang arus yang diukur</h4>
+      <div class="g4" style="gap:10px; margin-top:6px">
+        <div class="card pad-sm flat"><div class="chip">Arus kecil</div><p style="font-size:12.3px; margin-top:4px"><b>CT7126</b> — untuk pengukuran arus rendah dengan resolusi baik</p></div>
+        <div class="card pad-sm flat"><div class="chip">Arus menengah</div><p style="font-size:12.3px; margin-top:4px"><b>CT7136 / CT7731</b> — rentang umum untuk panel distribusi</p></div>
+        <div class="card pad-sm flat"><div class="chip a2">Arus besar</div><p style="font-size:12.3px; margin-top:4px"><b>CT7045 / CT7742</b> — arus tinggi, konduktor besar</p></div>
+        <div class="card pad-sm flat"><div class="chip vi">Sensor lama</div><p style="font-size:12.3px; margin-top:4px"><b>9661 / 9694</b> — melalui kabel konversi <b>L9910</b></p></div>
+      </div>
+      <p style="font-size:12.3px; color:var(--fg3); margin-top:6px">
+        <b>Aturan praktis:</b> pilih rentang sensor sehingga arus terukur berada di bagian <b>tengah</b> rentangnya — terlalu besar melemahkan resolusi, terlalu kecil membuat saturasi.
+      </p>
+    </div>
+  </div>
+  <div class="pg"></div>
+</section>
+
+<!-- ============================ 13 ============================ -->
+<section class="slide" data-foot="Blok B · Persiapan" data-title="Persiapan Pengukuran (Measurement Preparations)">
+  <div class="s-head">
+    <div class="s-kicker">Blok B · Persiapan Pengukuran</div>
+    <h2 class="s-title">Persiapan Pengukuran</h2>
+    <p class="s-sub">Dua tahap wajib: <b>inspeksi pra-operasi</b> (sebelum menyentuh panel) dan <b>persiapan awal instrumen</b> (sebelum perekaman pertama).</p>
+  </div>
+  <div class="s-body">
+    <div class="g2s fill">
+      <div class="col a" style="--d:.05s">
+        <div class="card">
+          <div class="tag">Tahap 1 · Inspeksi pra-operasi</div>
+          <h4>Sebelum instrumen dihubungkan ke saluran</h4>
+          <ol class="nl" style="margin-top:6px">
+            <li><b>Inspeksi voltage cord.</b> Periksa isolasi: apakah ada logam terbuka atau kerusakan? <b>Jangan gunakan</b> kabel yang rusak — risiko sengatan listrik.</li>
+            <li><b>Inspeksi clamp sensor.</b> Apakah clamp retak atau rusak? Apakah muncul pesan galat saat diuji?</li>
+            <li><b>Inspeksi instrumen.</b> Apakah ada kerusakan fisik yang jelas?</li>
+            <li><b>Inspeksi setelah dinyalakan.</b> Apakah tampilan <i>self-test</i> (model + versi) muncul? Apakah layar <b>[Wiring]</b> tampil setelah self-test selesai?</li>
+          </ol>
+          <p style="font-size:12.3px; color:var(--fg3); margin-top:8px">
+            Jika salah satu pemeriksaan gagal → <b>hentikan</b>, jangan lanjutkan, dan laporkan ke laboran/dosen.
+          </p>
+        </div>
+
+        <div class="card">
+          <h4><span class="ic">⛑</span> K3 — tidak bisa dinegosiasikan</h4>
+          <ul class="bl tight">
+            <li>Gunakan APD sesuai prosedur kerja bertegangan laboratorium.</li>
+            <li>Matikan suplai ke rangkaian yang akan diukur <b>sebelum</b> membuat sambungan.</li>
+            <li>Gunakan izin kerja / LOTO dan verifikasi bebas tegangan bila tersedia.</li>
+            <li>Jangan menyentuh terminal VT/CT atau terminal instrumen saat beroperasi.</li>
+            <li>Bila memakai CT eksternal: <b>jangan membuka</b> rangkaian sekunder. Bila memakai VT eksternal: <b>jangan menghubungsingkatkan</b> sekunder.</li>
+            <li>Salah satu sisi sekunder VT/CT harus dibumikan.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col a" style="--d:.16s">
+        <div class="card">
+          <div class="tag">Tahap 2 · Persiapan awal instrumen</div>
+          <h4>Urutan yang harus diikuti</h4>
+          <ol class="nl" style="margin-top:6px">
+            <li><b>Pasang Battery Pack</b> (pertama kali penggunaan). Baterai berfungsi sebagai catu cadangan saat pemadaman — bila tidak terpasang dan terjadi pemadaman, data yang belum tersimpan akan hilang.</li>
+            <li><b>Nyalakan instrumen &amp; set jam (clock).</b> Jam yang salah membuat seluruh analisis korelasi waktu menjadi tidak berarti. Periksa jam <b>setiap kali</b> sebelum merekam.</li>
+            <li><b>Pasang SD card</b>, lalu <b>tutup penutupnya</b>. Gunakan SD card yang disetujui pabrikan, dan format melalui instrumen (bukan melalui komputer).</li>
+            <li><b>Hubungkan AC adapter.</b> Matikan instrumen sebelum melepas AC adapter.</li>
+            <li><b>Hubungkan voltage cord &amp; clamp sensor.</b> Beri klip berwarna sesuai kanal agar tidak tertukar.</li>
+            <li><b>Nyalakan instrumen, panaskan ≥ 30 menit</b>, lalu lakukan <b>zero adjustment</b>.</li>
+            <li><b>Muat file pengaturan</b> bila tersedia (untuk pengukuran berulang dengan konfigurasi yang sama).</li>
+          </ol>
+        </div>
+
+        <div class="call warn">
+          <span class="h">Aturan zero adjustment — sering salah di praktikum</span>
+          <ul class="bl tight" style="margin-top:4px">
+            <li>Lakukan <b>setelah pemanasan minimal 30 menit</b> — bukan langsung setelah dinyalakan.</li>
+            <li>Lakukan <b>sebelum clamp dipasang</b> ke saluran yang diukur. Penyesuaian yang benar memerlukan <b>tidak adanya tegangan maupun arus masukan</b>.</li>
+            <li>Clamp sensor harus <b>sudah terpasang pada instrumen</b> saat zero adjustment dilakukan.</li>
+            <li>Lakukan pada suhu lingkungan yang masih dalam rentang spesifikasi alat.</li>
+            <li>Tombol operasi dinonaktifkan selama proses berlangsung — tunggu sampai selesai.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pg"></div>
+</section>
+
+<!-- ============================ 14 ============================ -->
+<section class="slide" data-foot="Review Materi · Blok A &amp; B" data-title="KUIS 1 — Review Materi">
+  <div class="s-head">
+    <div class="s-kicker">Review Materi · Kuis 1 dari 2</div>
+    <h2 class="s-title">Kuis 1 — Konsep, Standar &amp; Persiapan</h2>
+    <p class="s-sub">Klik jawaban yang Anda anggap benar. Umpan balik muncul seketika. Skor: <span id="q1score">0 / 5</span></p>
+  </div>
+  <div class="s-body">
+    <div class="quiz" id="quiz1" style="flex:1 1 auto">
+      <div class="q" data-ans="b">
+        <div class="qt">1. IEC 61000-4-30 terutama mengatur hal berikut…</div>
+        <div class="opts">
+          <button class="opt" data-k="a"><span class="lk">A</span><span>Nilai batas THD tegangan di titik PCC</span></button>
+          <button class="opt" data-k="b"><span class="lk">B</span><span>Cara mengukur kualitas daya, termasuk kelas instrumen dan akurasi jam</span></button>
+          <button class="opt" data-k="c"><span class="lk">C</span><span>Spesifikasi fungsional dan desain flickermeter</span></button>
+          <button class="opt" data-k="d"><span class="lk">D</span><span>Batas emisi harmonisa arus untuk peralatan rumah tangga</span></button>
+        </div>
+        <div class="fb"><b>B.</b> IEC 61000-4-30 adalah standar <i>cara mengukur</i>. Ia menetapkan metode, algoritma, akurasi jam, dan kelas instrumen (A/S) — <b>tetapi tidak menetapkan ambang batas</b>. Batas THD tegangan ada di IEEE 519 / EN 50160; flickermeter di IEC 61000-4-15; emisi arus peralatan di IEC 61000-3-2/3-12.</div>
+      </div>
+
+      <div class="q" data-ans="b">
+        <div class="qt">2. Untuk pekerjaan kontraktual yang berpotensi menjadi sengketa, instrumen kualitas daya harus…</div>
+        <div class="opts">
+          <button class="opt" data-k="a"><span class="lk">A</span><span>Kelas S — karena persyaratannya lebih sederhana</span></button>
+          <button class="opt" data-k="b"><span class="lk">B</span><span>Kelas A — karena algoritma, akurasi, dan jam pengukurannya ditetapkan</span></button>
+          <button class="opt" data-k="c"><span class="lk">C</span><span>Cukup multimeter true-RMS</span></button>
+          <button class="opt" data-k="d"><span class="lk">D</span><span>Cukup power logger perekam tren</span></button>
+        </div>
+        <div class="fb"><b>B.</b> Kelas A digunakan ketika pengukuran presisi diperlukan — aplikasi kontraktual, penyelesaian sengketa, verifikasi kesesuaian standar. Pada kelas ini, tidak hanya fungsi dan akurasi yang ditetapkan, tetapi juga <b>algoritma pengukuran, metode perhitungan RMS, dan akurasi jam</b>.</div>
+      </div>
+
+      <div class="q" data-ans="c">
+        <div class="qt">3. Sebelum melakukan <i>zero adjustment</i>, instrumen harus dipanaskan minimal…</div>
+        <div class="opts">
+          <button class="opt" data-k="a"><span class="lk">A</span><span>5 menit</span></button>
+          <button class="opt" data-k="b"><span class="lk">B</span><span>10 menit</span></button>
+          <button class="opt" data-k="c"><span class="lk">C</span><span>30 menit</span></button>
+          <button class="opt" data-k="d"><span class="lk">D</span><span>Tidak perlu pemanasan</span></button>
+        </div>
+        <div class="fb"><b>C.</b> Instrumen harus dipanaskan <b>minimal 30 menit</b> setelah dinyalakan agar kemampuan pengukuran presisinya tercapai. Zero adjustment yang dilakukan sebelum pemanasan selesai akan menghasilkan penyesuaian yang tidak valid.</div>
+      </div>
+
+      <div class="q" data-ans="c">
+        <div class="qt">4. Manakah yang <u>BUKAN</u> termasuk cakupan fenomena IEC 61000-4-30?</div>
+        <div class="opts">
+          <button class="opt" data-k="a"><span class="lk">A</span><span>Flicker</span></button>
+          <button class="opt" data-k="b"><span class="lk">B</span><span>Ketidakseimbangan tegangan suplai</span></button>
+          <button class="opt" data-k="c"><span class="lk">C</span><span>Harmonisa <u>arus</u> yang ditarik beban</span></button>
+          <button class="opt" data-k="d"><span class="lk">D</span><span>Fluktuasi tegangan cepat</span></button>
+        </div>
+        <div class="fb"><b>C.</b> Cakupan IEC 61000-4-30 dibatasi pada fenomena yang <b>menyebar di sistem suplai</b> — dan daftarnya menyebut <b>tegangan</b> harmonisa dan <b>tegangan</b> interharmonisa. Pengukuran harmonisa arus diatur terpisah (IEC 61000-4-7, dan batasnya di IEEE 519 / SPLN D5.004-1:2012).</div>
+      </div>
+
+      <div class="q" data-ans="b">
+        <div class="qt">5. Zero adjustment pada instrumen harus dilakukan…</div>
+        <div class="opts">
+          <button class="opt" data-k="a"><span class="lk">A</span><span>Setelah clamp terpasang pada konduktor berarus</span></button>
+          <button class="opt" data-k="b"><span class="lk">B</span><span>Sebelum clamp dipasang ke saluran ukur, tanpa tegangan maupun arus masukan</span></button>
+          <button class="opt" data-k="c"><span class="lk">C</span><span>Setelah proses perekaman selesai</span></button>
+          <button class="opt" data-k="d"><span class="lk">D</span><span>Hanya sekali seumur hidup alat</span></button>
+        </div>
+        <div class="fb"><b>B.</b> Penyesuaian yang benar mensyaratkan <b>tidak adanya tegangan maupun arus masukan</b>. Karena itu zero adjustment dilakukan <b>sebelum</b> clamp dipasang pada saluran yang diukur, dengan clamp sensor sudah tersambung ke instrumen.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pg"></div>
+</section>
+
+<!-- ============================ 15 ============================ -->
+<section class="slide" data-foot="Blok B · Konfigurasi" data-title="Konfigurasi Instrumen — Layar SYSTEM &amp; Wiring">
+  <div class="s-head">
+    <div class="s-kicker">Blok B · Konfigurasi Sebelum Pengukuran</div>
+    <h2 class="s-title">Konfigurasi Instrumen — Layar SYSTEM &amp; Wiring</h2>
+    <p class="s-sub">Bab ini adalah inti keselamatan sekaligus inti validitas data: <b>konfigurasi menentukan apa yang sebenarnya diukur instrumen</b>.</p>
+  </div>
+  <div class="s-body">
+    <div class="g2s fill">
+      <div class="col a" style="--d:.05s">
+        <table class="tbl tight" style="flex:0 0 auto">
+          <thead><tr><th style="width:24%">Menu SYSTEM</th><th>Isi pengaturan</th></tr></thead>
+          <tbody>
+            <tr><td><b>Wiring</b></td><td>Mode koneksi, sensor arus, rasio VT, rasio CT, <b>nama fasa</b> (R/S/T dapat diganti L1/L2/L3 atau U/V/W). <b>Layar ini selalu tampil setelah instrumen dinyalakan.</b></td></tr>
+            <tr><td><b>Measure 1</b></td><td>Koneksi, sensor arus, rasio VT/CT, rentang arus</td></tr>
+            <tr><td><b>Measure 2</b></td><td>Pengaturan EVENT / TIME PLOT, flicker, filter</td></tr>
+            <tr><td><b>Record<br>Interval</b></td><td>Item yang direkam, interval perekaman &amp; TIME PLOT, kendali real-time, perekaman berulang</td></tr>
+            <tr><td><b>Time</b></td><td>Waktu mulai/berhenti perekaman, kendali real-time, perekaman berulang</td></tr>
+            <tr><td><b>Hardware</b></td><td>Bahasa tampilan, warna layar, <b>jam (clock)</b>, keluaran eksternal, perangkat RS, beep, backlight LCD, reset sistem</td></tr>
+            <tr><td><b>LAN</b></td><td>Pengaturan jaringan LAN</td></tr>
+            <tr><td><b>Zero Adjust</b></td><td>Penyesuaian nol untuk kanal tegangan dan arus</td></tr>
+            <tr><td><b>VectorArea</b></td><td>Area toleransi diagram vektor: area fasa, area amplitudo, beda fasa U/I</td></tr>
+            <tr><td><b>Memory</b></td><td>Daftar file pada SD card: Load · Save · View · Delete · Format</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="col a" style="--d:.16s">
+        <div class="card">
+          <h4><span class="ic">🎚</span> Sub-layar ambang EVENT</h4>
+          <p style="font-size:12.8px; margin-bottom:6px">Instrumen menandai sebuah <b>event</b> ketika nilai masukan melewati ambang yang telah ditetapkan. Ambang diatur di sini:</p>
+          <table class="tbl tight">
+            <tbody>
+              <tr><td style="width:30%"><b>Voltage 1</b></td><td>Frekuensi, swell, dip, interruption, tegangan transient, hysteresis</td></tr>
+              <tr><td><b>Voltage 2</b></td><td>RMS tegangan, puncak gelombang, fluktuasi DC, THD, komponen harmonisa orde tinggi, faktor ketidakseimbangan</td></tr>
+              <tr><td><b>Current</b></td><td>Inrush current, RMS arus, puncak gelombang, fluktuasi DC, THD, harmonisa orde tinggi, faktor ketidakseimbangan, <b>faktor K</b></td></tr>
+              <tr><td><b>Harmonics</b></td><td>Ambang untuk harmonisa orde 0–50 (tegangan, arus, daya, fasa)</td></tr>
+              <tr><td><b>Power/etc</b></td><td>Daya aktif, reaktif, semu, faktor daya; <i>timer event</i>, <i>external event</i>, <i>continuous event</i></td></tr>
+              <tr><td><b>Wave / Event 1–2</b></td><td>Ambang pembentukan event dari bentuk gelombang tegangan</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="call warn">
+          <span class="h">Perhatikan — event ≠ kerusakan</span>
+          Event terbentuk karena <b>ambang yang kita tetapkan</b>, bukan karena kerusakan nyata.
+          Ambang terlalu ketat → ribuan event palsu; terlalu longgar → gangguan nyata tidak terekam.
+          <b>Buka daftar EVENT dan sesuaikan ambangnya.</b>
+        </div>
+      </div>
+    </div>
+
+    <div class="g4 a" style="--d:.28s">
+      <div class="step"><div class="n">1</div><div><div class="t">Pilih mode Wiring</div><div class="d">Sesuaikan dengan sistem nyata</div></div></div>
+      <div class="step"><div class="n">2</div><div><div class="t">Set sensor &amp; rentang</div><div class="d">Sensor arus + rasio VT/CT</div></div></div>
+      <div class="step"><div class="n">3</div><div><div class="t">Set ambang &amp; interval</div><div class="d">Event, TIME PLOT, waktu mulai</div></div></div>
+      <div class="step"><div class="n">4</div><div><div class="t">Verifikasi lalu START</div><div class="d">Cek vektor &amp; nilai sesaat</div></div></div>
+    </div>
+  </div>
+  <div class="pg"></div>
+</section>
+
+<!-- ============================ 16 ============================ -->
+<section class="slide" data-foot="Blok B · Wiring" data-title="Circuit Wiring — Konfigurasi Pengkabelan">
+  <div class="s-head">
+    <div class="s-kicker">Blok B · Wiring</div>
+    <h2 class="s-title">Circuit Wiring — Konfigurasi Pengkabelan</h2>
+    <p class="s-sub">Instrumen menyediakan <b>8 mode pengkabelan</b>. Klik setiap mode untuk melihat diagram dan aturannya.</p>
+  </div>
+  <div class="s-body">
+    <div class="tabs a" style="--d:.05s">
+      <button class="tab on" data-wire="w1p2w">1P2W</button>
+      <button class="tab" data-wire="w1p3w">1P3W</button>
+      <button class="tab" data-wire="w3p3w">3P3W</button>
+      <button class="tab" data-wire="w3p4w">3P4W</button>
+      <button class="tab" data-wire="w3v3a">3V3A</button>
+      <button class="tab" data-wire="wmulti">Multi-sistem &amp; DC</button>
+    </div>
+
+    <div class="fill" style="display:flex; flex-direction:column">
+      <div class="wire-info on g2s fill" id="w1p2w">
+        <div class="figwrap">
+          <div class="fig" style="padding:12px">
+            <svg viewBox="0 0 420 240" style="width:100%;max-height:100%">
+              <text x="12" y="24" font-family="sans-serif" font-size="14" font-weight="700" fill="#0b1a2b">1P2W — Single-phase 2-wire</text>
+              <line x1="60" y1="70" x2="330" y2="70" stroke="#0b1a2b" stroke-width="2.5"/>
+              <line x1="60" y1="180" x2="330" y2="180" stroke="#0b1a2b" stroke-width="2.5"/>
+              <circle cx="60" cy="125" r="34" fill="none" stroke="#0b5fa5" stroke-width="2.5"/>
+              <path d="M42,125 a18,12 0 0 1 36,0 a18,12 0 0 1 -36,0" fill="none" stroke="#0b5fa5" stroke-width="2.2"/>
+              <text x="30" y="176" font-family="sans-serif" font-size="12" fill="#33475e">Sumber AC</text>
+              <rect x="330" y="86" width="56" height="78" rx="5" fill="#e3eefa" stroke="#0b5fa5" stroke-width="2.5"/>
+              <text x="336" y="130" font-family="sans-serif" font-size="13" font-weight="700" fill="#0b5fa5">Beban</text>
+              <rect x="150" y="60" width="34" height="20" rx="3" fill="#fde68a" stroke="#9a5b06" stroke-width="2"/>
+              <text x="152" y="52" font-family="sans-serif" font-size="11" fill="#9a5b06">U1</text>
+              <rect x="150" y="170" width="34" height="20" rx="3" fill="#cbd5e1" stroke="#33475e" stroke-width="2"/>
+              <text x="152" y="206" font-family="sans-serif" font-size="11" fill="#33475e">N</text>
+              <ellipse cx="120" cy="70" rx="13" ry="19" fill="none" stroke="#0b5fa5" stroke-width="3"/>
+              <text x="96" y="34" font-family="sans-serif" font-size="11" fill="#0b5fa5">clamp CH1</text>
+            </svg>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card">
+            <h4><span class="ic">▣</span> 1P2W — Satu fasa, dua kawat</h4>
+            <ul class="bl tight">
+              <li><b>Pemakaian:</b> instalasi rumah &amp; beban kecil, penerangan, outlet peralatan.</li>
+              <li><b>Sensor:</b> <b>1 clamp</b> (CH1, merah) pada konduktor fasa.</li>
+              <li><b>Kabel tegangan:</b> U1 pada fasa, N pada netral.</li>
+            </ul>
+          </div>
+          <div class="call">
+            <span class="h">Cara membaca daya</span>
+            P = U<sub>1N</sub> × I<sub>1</sub> × PF. Karena hanya satu kanal yang aktif, hasilnya langsung menunjukkan daya beban tersebut.
+          </div>
+        </div>
+      </div>
+
+      <div class="wire-info g2s fill" id="w1p3w">
+        <div class="figwrap">
+          <div class="fig"><img src="assets/yoko_fig19_1p3w.png" alt="Diagram 1 fasa 3 kawat"></div>
+        </div>
+        <div class="col">
+          <div class="card">
+            <h4><span class="ic">▣</span> 1P3W — Satu fasa, tiga kawat (split-phase)</h4>
+            <ul class="bl tight">
+              <li><b>Pemakaian:</b> sistem dua tegangan dari satu transformator (misalnya 220 V fasa–netral dan 380/440 V antar fasa).</li>
+              <li><b>Sensor:</b> <b>2 clamp</b> — CH1 (merah) pada fasa 1, CH2 (kuning) pada fasa 2.</li>
+              <li><b>Kabel tegangan:</b> U1, U2, dan N.</li>
+            </ul>
+          </div>
+          <div class="call warn">
+            <span class="h">Perhatian</span>
+            Konduktor netral <b>tidak</b> boleh dijepit bersama konduktor fasa. Satu clamp hanya boleh melingkupi <b>satu</b> konduktor.
+          </div>
+        </div>
+      </div>
+
+      <div class="wire-info g2s fill" id="w3p3w">
+        <div class="figwrap">
+          <div class="fig"><img src="assets/yoko_3p3w.png" alt="Diagram 3 fasa 3 kawat metode dua wattmeter"></div>
+        </div>
+        <div class="col">
+          <div class="card">
+            <h4><span class="ic">▣</span> 3P3W — Tiga fasa, tiga kawat</h4>
+            <ul class="bl tight">
+              <li><b>Pemakaian:</b> sistem industri tanpa netral, beban motor tiga fasa.</li>
+              <li><b>Sensor:</b> <b>3 clamp</b> — CH1 (merah), CH2 (kuning), CH3 (biru).</li>
+              <li><b>Metode:</b> dua wattmeter (<i>two-wattmeter method</i>) — daya total adalah jumlah kedua pengukuran.</li>
+            </ul>
+          </div>
+          <div class="call idea">
+            <span class="h">Mengapa cukup dua wattmeter?</span>
+            Menurut <b>teorema Blondel</b>, untuk sistem dengan <i>N</i> konduktor diperlukan <i>N−1</i> wattmeter.
+            Sistem 3 kawat → cukup 2 wattmeter. Untuk mengukur <b>arus</b> setiap fasa secara individual,
+            digunakan mode 3P3W3M (tiga kanal arus).
+          </div>
+        </div>
+      </div>
+
+      <div class="wire-info g2s fill" id="w3p4w">
+        <div class="figwrap">
+          <div class="fig"><img src="assets/yoko_3p4w.png" alt="Diagram sambungan bintang tiga fasa 4 kawat"></div>
+        </div>
+        <div class="col">
+          <div class="card">
+            <h4><span class="ic">▣</span> 3P4W — Tiga fasa, empat kawat</h4>
+            <ul class="bl tight">
+              <li><b>Pemakaian:</b> sistem distribusi tegangan rendah yang paling umum — menyalurkan beban satu fasa dan tiga fasa sekaligus.</li>
+              <li><b>Sensor:</b> <b>3 clamp</b> pada fasa R, S, T; kanal <b>CH4</b> dapat dipakai untuk mengukur <b>arus netral</b>.</li>
+              <li><b>Kabel tegangan:</b> U1, U2, U3, dan N.</li>
+            </ul>
+          </div>
+          <div class="call good">
+            <span class="h">Paling kaya informasi untuk pembelajaran</span>
+            Mode ini memungkinkan sekaligus: pengukuran daya total, deteksi <b>ketidakseimbangan</b>,
+            dan pengukuran <b>arus netral</b> — yang pada beban non-linear dapat menjadi lebih besar
+            daripada arus fasa akibat penjumlahan komponen harmonisa orde kelipatan tiga.
+          </div>
+        </div>
+      </div>
+
+      <div class="wire-info g2s fill" id="w3v3a">
+        <div class="figwrap">
+          <div class="fig"><img src="assets/yoko_3v3a.png" alt="Diagram konfigurasi 3V3A"></div>
+        </div>
+        <div class="col">
+          <div class="card">
+            <h4><span class="ic">▣</span> 3V3A — Konfigurasi tiga tegangan, tiga arus</h4>
+            <ul class="bl tight">
+              <li><b>Pemakaian:</b> sistem 3 fasa 3 kawat ketika ketiga tegangan fasa–fasa diukur dan ketiga arus line diukur secara terpisah.</li>
+              <li><b>Kegunaan:</b> memeriksa <b>ketidakseimbangan tegangan fasa–fasa</b> dan memperoleh data arus per fasa untuk analisis harmonisa.</li>
+            </ul>
+          </div>
+          <div class="call">
+            <span class="h">Kapan dipilih?</span>
+            Bila Anda memerlukan tegangan <b>setiap pasangan fasa</b> secara terukur (bukan dihitung), dan bukan hanya daya total.
+          </div>
+        </div>
+      </div>
+
+      <div class="wire-info g2s fill" id="wmulti">
+        <div class="figwrap">
+          <div class="fig"><img src="assets/yoko_fig20_deltastar.png" alt="Konfigurasi delta dan bintang"></div>
+        </div>
+        <div class="col">
+          <div class="card">
+            <h4><span class="ic">▣</span> Mode multi-sistem &amp; pengukuran DC</h4>
+            <ul class="bl tight">
+              <li><b>Dua sirkuit:</b> mengukur dua sistem terpisah secara bersamaan dalam satu instrumen.</li>
+              <li><b>Sistem + catu daya DC:</b> CH1–CH3 mengukur sistem AC, CH4 mengukur catu daya DC (±24 V, ±15 V, ±5 V, dan sejenisnya).</li>
+              <li>Pada PQ3100, kanal <b>CH1–CH3 dan CH4 tidak terisolasi</b> — perhatikan hal ini saat mengukur dua titik yang berbeda potensialnya.</li>
+            </ul>
+          </div>
+          <div class="call warn">
+            <span class="h">Sebelum menyambung — selalu ingat</span>
+            <ul class="bl tight" style="margin-top:4px">
+              <li>Jepit <b>hanya satu konduktor</b> per clamp. Menjepit dua konduktor sekaligus membuat arus tidak terbaca.</li>
+              <li><b>Arah panah</b> pada clamp harus menuju <b>beban</b>.</li>
+              <li>Matikan suplai sebelum membuat sambungan.</li>
+              <li>Setelah terpasang: periksa nilai sesaat dan <b>diagram vektor</b> sebelum menekan START.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pg"></div>
+</section>
+
+<!-- ============================ 17 ============================ -->
+<section class="slide" data-foot="Blok B · Investigasi" data-title="Investigasi &amp; Analisis Masalah Kualitas Daya">
+  <div class="s-head">
+    <div class="s-kicker">Blok B · Investigasi</div>
+    <h2 class="s-title">Investigasi &amp; Analisis Masalah Kualitas Daya</h2>
+    <p class="s-sub">Empat kebiasaan yang membedakan teknisi yang <b>menemukan penyebab</b> dari yang hanya <b>mengumpulkan data</b>.</p>
+  </div>
+  <div class="s-body">
+    <div class="g2 fill a" style="--d:.05s">
+      <div class="card">
+        <div class="tag">Kebiasaan 1</div>
+        <h4>Rekam tren tegangan <u>dan</u> arus di titik ukur</h4>
+        <p style="font-size:13.2px">Ini cara tercepat menentukan <b>di mana</b> penyebab berada.</p>
+        <div class="g2" style="gap:11px; margin-top:9px">
+          <div class="card pad-sm flat" style="border-left:4px solid var(--rose)">
+            <div class="chip ro">Tegangan turun saat arus naik</div>
+            <p style="font-size:12.3px; margin-top:5px">Penyebab berada <b>di dalam</b> instalasi. Arus yang meningkat — karena hubung singkat atau arus inrush — menjatuhkan tegangan akibat kapasitas suplai yang tidak memadai.</p>
+          </div>
+          <div class="card pad-sm flat" style="border-left:4px solid var(--accent)">
+            <div class="chip">Tegangan dan arus turun bersamaan</div>
+            <p style="font-size:12.3px; margin-top:5px">Penyebab berada <b>di luar</b> instalasi. Gangguan berasal dari jaringan atau dari peralatan/anomali di sisi lain titik ukur.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="tag">Kebiasaan 2</div>
+        <h4>Periksa tren daya</h4>
+        <p style="font-size:13.2px">Peralatan dalam kondisi <b>beban berlebih (overload)</b> sangat sering menjadi akar masalah.
+          Dengan mengenali tren daya, peralatan atau lokasi penyebab menjadi jauh lebih mudah diidentifikasi.</p>
+        <div class="call" style="margin-top:9px; font-size:12.8px">
+          <b>Praktiknya:</b> bandingkan daya terukur dengan daya nominal peralatan. Bila daya terukur terus mendekati atau melampaui nominal, itu indikasi awal sebelum kerusakan terjadi.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="tag">Kebiasaan 3</div>
+        <h4>Periksa <u>KAPAN</u> event terjadi</h4>
+        <p style="font-size:13.2px">Ketika sebuah event terekam, peralatan yang sedang beroperasi atau <b>melakukan start ulang</b> pada waktu itu adalah kandidat penyebab terkuat.
+          Dengan mengetahui <b>jam kejadian</b> dan <b>kapan gangguan mereda</b>, penelusuran peralatan menjadi jauh lebih terarah.</p>
+        <div class="call idea" style="margin-top:9px; font-size:12.8px">
+          <b>Jam yang benar pada instrumen adalah syarat mutlak.</b> Tanpa jam yang akurat, korelasi waktu dengan log operasi pabrik menjadi tidak mungkin.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="tag">Kebiasaan 4</div>
+        <h4>Periksa panas dan suara tidak normal</h4>
+        <p style="font-size:13.2px">Panas berlebih atau suara tidak wajar dari <b>motor, transformator, atau kabel</b> adalah tanda adanya masalah akibat
+          <b>beban berlebih atau harmonisa</b>. Pemeriksaan ini gratis, cepat, dan sering langsung menunjuk titik masalah.</p>
+        <div class="call good" style="margin-top:9px; font-size:12.8px">
+          <b>Kombinasikan:</b> pengamatan fisik (panas, suara, bau) + data terukur (event, tren) = diagnosis yang dapat dipertanggungjawabkan.
+        </div>
+      </div>
+    </div>
+
+    <div class="call a" style="--d:.24s">
+      <span class="h">Ukur di beberapa titik secara simultan</span>
+      Mengukur pada beberapa lokasi sekaligus (panel distribusi, outlet, terminal peralatan) membuat penentuan sumber masalah jauh lebih mudah.
+      Namun <b>prioritaskan selalu mengukur tegangan, arus, dan daya</b> — karena dari tren keduanya penyebab dapat diidentifikasi paling cepat.
+    </div>
+  </div>
+  <div class="pg"></div>
+</section>
+
+<!-- ============================ 18 ============================ -->
+<section class="slide" data-foot="Blok B · Prosedur" data-title="Langkah-langkah Analisis Kualitas Daya">
+  <div class="s-head">
+    <div class="s-kicker">Blok B · Prosedur</div>
+    <h2 class="s-title">Langkah-langkah Analisis Kualitas Daya</h2>
+    <p class="s-sub">Empat langkah prosedur survei, dilanjutkan rantai analisis sampai kesimpulan. Ikuti urutannya — melompat langkah adalah penyebab utama laporan yang tidak dapat dipertanggungjawabkan.</p>
+  </div>
+  <div class="s-body">
+    <div class="g2s fill">
+      <div class="col a" style="--d:.05s">
+        <div class="card">
+          <div class="tag">Prosedur survei · Step 1–4</div>
+          <div class="step" style="margin-bottom:8px"><div class="n">1</div><div><div class="t">Tetapkan TUJUAN</div><div class="d">Survei kualitas daya → lanjut ke Step 3 &nbsp;|&nbsp; Troubleshooting → lanjut ke Step 2</div></div></div>
+          <div class="arrowdown">▼</div>
+          <div class="step" style="margin:8px 0"><div class="n">2</div><div><div class="t">Pahami MASALAHNYA</div><div class="d">Apa masalahnya? Kapan terjadi? Di mana &amp; apa yang harus diukur? Apa dugaan penyebabnya?</div></div></div>
+          <div class="arrowdown">▼</div>
+          <div class="step" style="margin:8px 0"><div class="n">3</div><div><div class="t">Kenali LOKASI PENGUKURAN</div><div class="d">Konfigurasi pengkabelan, tegangan nominal, frekuensi, kebutuhan netral/DC, kapasitas arus</div></div></div>
+          <div class="arrowdown">▼</div>
+          <div class="step" style="margin-top:8px"><div class="n">4</div><div><div class="t">UKUR</div><div class="d">Gunakan power quality analyzer: wiring check → quick setup → verifikasi → rekam</div></div></div>
+        </div>
+
+        <div class="card">
+          <h4><span class="ic">?</span> Isi Step 2 secara rinci</h4>
+          <table class="tbl tight" style="margin-top:5px">
+            <tbody>
+              <tr><td style="width:32%"><b>Apa masalahnya?</b></td><td>Peralatan utama: mesin fotokopi besar, UPS, lift, kompresor, pendingin, battery charger, VFD… atau pada distribusi: kerusakan conduit, trafo panas/berisik/bocor oli, breaker terbuka/panas</td></tr>
+              <tr><td><b>Kapan terjadi?</b></td><td>Selalu · Periodik · Terputus-putus · Pada waktu/tanggal tertentu</td></tr>
+              <tr><td><b>Apa yang diukur?</b></td><td><b>Tegangan, arus, (daya)</b> — selalu. Ditambah pengukuran di beberapa titik secara simultan</td></tr>
+              <tr><td><b>Dugaan penyebab?</b></td><td>Masalah <b>tegangan</b>: fluktuasi RMS, distorsi gelombang, tegangan transient, harmonisa orde tinggi.<br>Masalah <b>arus</b>: arus bocor, arus inrush</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="col a" style="--d:.18s">
+        <div class="card">
+          <div class="tag">Rantai analisis · Step 5–9</div>
+          <p style="font-size:12.8px; margin-bottom:8px">Setelah data terekam, analisis <b>wajib</b> mengikuti rantai ini. Setiap panah adalah pekerjaan yang harus terlihat di laporan.</p>
+          <ol class="nl">
+            <li><b>Data terukur</b> — ambil dari event list, TIME PLOT, dan bentuk gelombang</li>
+            <li><b>Perhitungan</b> — olah menjadi parameter yang relevan (RMS, THD, unbalance, PF, dll.)</li>
+            <li><b>Perbandingan dengan standar</b> — dengan <b>parameter, agregasi, periode, dan lokasi yang setara</b></li>
+            <li><b>Interpretasi teknik</b> — hubungkan angka dengan kejadian fisik yang dilaporkan</li>
+            <li><b>Dugaan penyebab</b> — berdasarkan tanda diagnostik, bukan dugaan bebas</li>
+            <li><b>Rekomendasi</b> — tindakan perbaikan yang spesifik dan dapat diverifikasi</li>
+          </ol>
+        </div>
+
+        <div class="call bad">
+          <span class="h">Yang dilarang</span>
+          Menyimpulkan penyebab <b>hanya dari data</b>, tanpa bukti pendukung (log operasi, pengamatan fisik, pengukuran ulang).
+          Data menunjukkan <b>apa</b> yang terjadi; <b>mengapa</b> itu terjadi masih memerlukan verifikasi.
+        </div>
+        <div class="call good">
+          <span class="h">Kebiasaan yang benar</span>
+          Sebelum percaya pada sebuah angka: <b>lihat bentuk gelombangnya</b>. Sebelum menyimpulkan: <b>bandingkan
+          kondisi yang setara</b>. Sebelum merekomendasikan: <b>pastikan tindakan itu dapat diuji ulang</b>.
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pg"></div>
+</section>
+
+<!-- ============================ 19 ============================ -->
+<section class="slide" data-foot="Blok B · Instrumen" data-title="Alat Ukur untuk Analisis Kualitas Daya">
+  <div class="s-head">
+    <div class="s-kicker">Blok B · Instrumen</div>
+    <h2 class="s-title">Alat Ukur untuk Analisis Kualitas Daya</h2>
+    <p class="s-sub">Alat yang tepat bergantung pada <b>pertanyaan</b> yang ingin dijawab — bukan pada alat yang kebetulan tersedia.</p>
+  </div>
+  <div class="s-body">
+    <div class="g2s fill">
+      <div class="col a" style="--d:.05s">
+        <table class="tbl tight" style="flex:0 0 auto">
+          <thead><tr><th style="width:42%">Keperluan</th><th>Instrumen yang sesuai</th></tr></thead>
+          <tbody>
+            <tr><td>Survei daya &amp; energi, tren beban, pemeliharaan prediktif</td><td>Power logger <b>PW3360-21</b>, <b>PW3365</b></td></tr>
+            <tr><td>Troubleshooting kualitas daya harian (praktikum kita)</td><td><b>PQ3100</b> — Class S</td></tr>
+            <tr><td>Pengukuran kontraktual / verifikasi kesesuaian standar</td><td><b>PQ3198</b> — Class A</td></tr>
+            <tr><td>Harmonisa orde tinggi (2–80 kHz) &amp; transient dengan sampling cepat</td><td><b>PQ3198</b></td></tr>
+            <tr><td>Efisiensi inverter (sisi primer &amp; sekunder sekaligus)</td><td>PQ3198 · <b>PW6001</b> · PW3390</td></tr>
+            <tr><td>Motor &amp; inverter frekuensi tinggi (hingga MHz)</td><td><b>PW6001</b> (0,1 Hz–2 MHz) · PW3390</td></tr>
+            <tr><td>Analisis lanjutan, evaluasi EN 50160, perhitungan TDD</td><td>Perangkat lunak <b>PQ ONE</b></td></tr>
+            <tr><td>Pemantauan jarak jauh &amp; manajemen data</td><td><b>Gennect One</b> · Gennect Cross</td></tr>
+          </tbody>
+        </table>
+        <div class="call warn">
+          <span class="h">Sesuaikan alat dengan bentuk gelombang</span>
+          Beban <b>terkendali siklus/fasa</b> menuntut instrumen tipe <b>AC+DC</b> — tipe AC murni menggeser titik nol
+          gelombang arus sehingga RMS arus salah. Untuk <b>inverter</b>, diperlukan lebar pita lebar.
+        </div>
+      </div>
+
+      <div class="col a" style="--d:.16s">
+        <div class="figwrap a" style="--d:.16s">
+          <div class="fig" style="max-height:196px"><img src="assets/hioki_screen_eventlist.png" alt="Layar daftar event pada analyzer"></div>
+          <div class="figcap">Layar daftar EVENT — pintu masuk utama analisis: menunjukkan <b>event apa</b>, <b>kapan</b>, <b>fase mana</b>, dan <b>seberapa besar</b>.</div>
+        </div>
+        <div class="card">
+          <h4><span class="ic">⌕</span> Yang harus diperiksa saat menganalisis</h4>
+          <table class="tbl tight" style="margin-top:5px">
+            <tbody>
+              <tr><td style="width:26%"><b>EVENT</b></td><td>Jenis, waktu, durasi, fasa, nilai ekstrem</td></tr>
+              <tr><td><b>TIME PLOT</b></td><td>Tren RMS tegangan/arus/daya &amp; korelasinya</td></tr>
+              <tr><td><b>WAVE</b></td><td>Bentuk gelombang sesaat ketika event terjadi</td></tr>
+              <tr><td><b>VECTOR</b></td><td>Verifikasi pengkabelan, urutan fasa, orientasi clamp</td></tr>
+              <tr><td><b>HARMONICS</b></td><td>Diagram batang per orde, THD, arah aliran harmonisa</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pg"></div>
+</section>
+
+<!-- ============================ 20 ============================ -->
+<section class="slide" data-foot="Blok C · Dasar Daya Listrik" data-title="Dasar Pengukuran Daya Listrik — Pengantar">
+  <div class="s-head">
+    <div class="s-kicker">Blok C · Dasar Daya Listrik AC</div>
+    <h2 class="s-title">Dasar Pengukuran Daya Listrik</h2>
+    <p class="s-sub">Sebelum menekan <b>START</b>: pahami <b>apa</b> yang diukur, dalam <b>satuan</b> apa, dan <b>bagaimana</b> instrumen menghitungnya.</p>
+  </div>
+  <div class="s-body">
+    <div class="g3 a" style="--d:.05s">
+      <div class="card">
+        <div class="tag">Pertanyaan 1</div>
+        <h4>Apa yang sebenarnya diukur?</h4>
+        <p style="font-size:13.2px">Instrumen tidak "melihat" daya secara langsung. Ia mengambil <b>sampel tegangan dan arus</b> pada laju sampling tertentu, lalu <b>menghitung</b> daya dari sampel-sampel itu.</p>
+      </div>
+      <div class="card">
+        <div class="tag">Pertanyaan 2</div>
+        <h4>Dalam satuan apa hasilnya?</h4>
+        <p style="font-size:13.2px">Daya aktif dalam <b>W</b>, daya semu dalam <b>VA</b>, daya reaktif dalam <b>VAR</b>, faktor daya tanpa satuan. <b>Tertukarnya satuan adalah kesalahan pelaporan yang paling sering terjadi.</b></p>
+      </div>
+      <div class="card">
+        <div class="tag">Pertanyaan 3</div>
+        <h4>Bagaimana instrumen menghitungnya?</h4>
+        <p style="font-size:13.2px">Nilai RMS dihitung dari sampel gelombang; daya aktif dari integral perkalian tegangan–arus; daya semu dari hasil kali kedua RMS. <b>Setiap asumsi perhitungan menentukan arti angka.</b></p>
+      </div>
+    </div>
+
+    <div class="g2s fill">
+      <div class="col a" style="--d:.16s">
+        <div class="card">
+          <h4><span class="ic">➜</span> Peta jalan Blok C (slide 21–28)</h4>
+          <table class="tbl tight" style="margin-top:5px">
+            <tbody>
+              <tr><td style="width:22%"><b>Slide 21</b></td><td>Arus, tegangan, dan hambatan — hukum Ohm</td></tr>
+              <tr><td><b>Slide 22</b></td><td>Daya (power) dan daya DC</td></tr>
+              <tr><td><b>Slide 23</b></td><td>Daya AC dan nilai RMS</td></tr>
+              <tr><td><b>Slide 24</b></td><td>Daya pada sistem AC — pengaruh beda fasa</td></tr>
+              <tr><td><b>Slide 25</b></td><td>Segitiga daya dan faktor daya</td></tr>
+              <tr><td><b>Slide 26</b></td><td>Representasi vektor arus &amp; tegangan AC</td></tr>
+              <tr><td><b>Slide 27</b></td><td>Sistem daya AC dan beban listrik AC</td></tr>
+              <tr><td><b>Slide 28</b></td><td>Vektor tiga fasa, PF tiga fasa, P-Q-S, dan hubungan daya AC</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="call good">
+          <span class="h">Tujuan blok ini</span>
+          Agar ketika angka muncul di layar PQ3100, Anda tahu <b>dari mana angka itu berasal</b>,
+          <b>apa artinya</b>, dan <b>kapan angka itu tidak dapat dipercaya</b>.
+        </div>
+      </div>
+
+      <div class="col" style="--d:.26s">
+        <div class="figwrap a" style="--d:.26s">
+          <div class="fig"><img src="assets/hioki_screen_vectors.png" alt="Layar pengukuran dengan diagram vektor dan nilai sesaat"></div>
+          <div class="figcap">Layar pengukuran: nilai sesaat tegangan &amp; arus di kiri, <b>diagram vektor</b> di kanan. Diagram vektor adalah alat verifikasi pengkabelan tercepat yang tersedia.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pg"></div>
+</section>
+
+<!-- ============================ 21 ============================ -->
+<section class="slide" data-foot="Blok C · Dasar Daya Listrik" data-title="Arus, Tegangan, dan Hambatan">
+  <div class="s-head">
+    <div class="s-kicker">Blok C · Dasar Daya Listrik</div>
+    <h2 class="s-title">Arus, Tegangan, dan Hambatan</h2>
+    <p class="s-sub">Tiga besaran dasar yang menjadi fondasi seluruh pengukuran daya. Semuanya saling terikat oleh <b>hukum Ohm</b>.</p>
+  </div>
+  <div class="s-body">
+    <div class="g2s fill">
+      <div class="col a" style="--d:.05s">
+        <table class="tbl tight" style="flex:0 0 auto">
+          <thead><tr><th style="width:22%">Besaran</th><th style="width:12%">Simbol</th><th style="width:14%">Satuan</th><th>Makna fisik</th></tr></thead>
+          <tbody>
+            <tr><td><b>Tegangan</b></td><td><b>V</b> (U)</td><td>volt (V)</td><td>Beda potensial listrik — "tekanan" yang mendorong muatan</td></tr>
+            <tr><td><b>Arus</b></td><td><b>I</b></td><td>ampere (A)</td><td>Laju aliran muatan listrik melalui konduktor</td></tr>
+            <tr><td><b>Hambatan</b></td><td><b>R</b></td><td>ohm (Ω)</td><td>Penghambat aliran arus; mengubah energi listrik menjadi panas</td></tr>
+            <tr><td><b>Daya</b></td><td><b>P</b></td><td>watt (W)</td><td>Laju perpindahan / penggunaan energi</td></tr>
+          </tbody>
+        </table>
+
+        <div class="figwrap a" style="--d:.14s">
+          <div class="fig"><img src="assets/yoko_fig01_circuit.png" alt="Komponen dasar rangkaian: tegangan, arus, hambatan, beban lampu"></div>
+          <div class="figcap">Rangkaian dasar: sumber tegangan, arus yang mengalir, hambatan, dan beban (lampu) — energi listrik berubah menjadi cahaya dan panas.</div>
+        </div>
+      </div>
+
+      <div class="col a" style="--d:.16s">
+        <div class="card">
+          <h4><span class="ic">△</span> Hukum Ohm — tiga bentuk</h4>
+          <div class="g3" style="gap:10px; margin-top:6px">
+            <div class="card pad-sm flat" style="text-align:center"><div class="mid mono" style="color:var(--accent)">V = I · R</div><p style="font-size:11.9px; margin-top:5px">Cari tegangan</p></div>
+            <div class="card pad-sm flat" style="text-align:center"><div class="mid mono" style="color:var(--accent)">I = V / R</div><p style="font-size:11.9px; margin-top:5px">Cari arus</p></div>
+            <div class="card pad-sm flat" style="text-align:center"><div class="mid mono" style="color:var(--accent)">R = V / I</div><p style="font-size:11.9px; margin-top:5px">Cari hambatan</p></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h4><span class="ic">🧮</span> Kalkulator interaktif — isi dua nilai, kosongkan satu</h4>
+          <div class="g3" style="gap:12px; margin-top:7px">
+            <div><label class="lab">Tegangan V (volt)</label><input class="inp" id="ohmV" type="number" step="any" placeholder="—" inputmode="decimal"></div>
+            <div><label class="lab">Arus I (ampere)</label><input class="inp" id="ohmI" type="number" step="any" placeholder="—" inputmode="decimal"></div>
+            <div><label class="lab">Hambatan R (ohm)</label><input class="inp" id="ohmR" type="number" step="any" placeholder="—" inputmode="decimal"></div>
+          </div>
+          <div class="row" style="gap:9px; margin-top:10px; align-items:center">
+            <button class="btn primary" id="ohmGo">Hitung</button>
+            <button class="btn" id="ohmClr">Kosongkan</button>
+            <span id="ohmOut" style="font-size:13.2px; color:var(--fg2)">Masukkan dua nilai, lalu tekan <b>Hitung</b>.</span>
+          </div>
+          <p style="font-size:11.9px; color:var(--fg3); margin-top:8px">
+            Contoh: bila V = 220 V dan R = 44 Ω → I = 220 / 44 = <b>5 A</b>.
+          </p>
+        </div>
+
+        <div class="call warn">
+          <span class="h">Pada sistem AC — satu catatan penting</span>
+          Untuk gelombang AC, nilai V dan I yang digunakan dalam hubungan ini adalah <b>nilai RMS (efektif)</b>,
+          bukan nilai puncak. Instrumen kualitas daya menampilkan dan menghitung dengan nilai <b>RMS sejati</b> —
+          termasuk ketika gelombangnya sudah terdistorsi dan tidak lagi sinusoidal.
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pg"></div>
+</section>
+
+<!-- ============================ 22 ============================ -->
+<section class="slide" data-foot="Blok C · Dasar Daya Listrik" data-title="Daya (Power) &amp; Daya DC">
+  <div class="s-head">
+    <div class="s-kicker">Blok C · Dasar Daya Listrik</div>
+    <h2 class="s-title">Daya (Power) &amp; Daya DC</h2>
+    <p class="s-sub">Daya adalah <b>laju</b> energi. Pada arus searah hubungannya sederhana — dan justru dari sinilah konsep nilai RMS lahir.</p>
+  </div>
+  <div class="s-body">
+    <div class="g2s fill">
+      <div class="col a" style="--d:.05s">
+        <div class="card">
+          <h4><span class="ic">▪</span> Daya arus searah (DC)</h4>
+          <div class="g3" style="gap:10px; margin-top:6px">
+            <div class="card pad-sm flat" style="text-align:center"><div class="mid mono" style="color:var(--accent)">P = V · I</div><p style="font-size:11.9px; margin-top:5px">Daya (W)</p></div>
+            <div class="card pad-sm flat" style="text-align:center"><div class="mid mono" style="color:var(--accent)">W = P · t</div><p style="font-size:11.9px; margin-top:5px">Energi (Wh)</p></div>
+            <div class="card pad-sm flat" style="text-align:center"><div class="mid mono" style="color:var(--accent)">P = I² · R</div><p style="font-size:11.9px; margin-top:5px">Rugi pada hambatan</p></div>
+          </div>
+          <p style="font-size:13.2px; margin-top:10px">
+            Pada DC, tegangan dan arus bernilai tetap sehingga daya juga tetap. Tidak ada beda fasa dan tidak ada daya reaktif —
+            seluruh daya yang dihitung adalah daya yang benar-benar bekerja.
+          </p>
+        </div>
+
+        <div class="card">
+          <h4><span class="ic">≡</span> Mengapa nilai RMS penting? — percobaan pembanding</h4>
+          <div class="row" style="gap:16px; align-items:center; margin-top:6px">
+            <div class="fig" style="flex:1 1 50%; padding:6px"><img src="assets/yoko_fig05_dcacpower.png" alt="Perbandingan 1 A DC dan 1 A RMS AC pada hambatan 10 ohm"></div>
+            <div style="flex:1 1 50%">
+              <ul class="bl tight">
+                <li>Hambatan <b>10 Ω</b> diberi arus <b>1 A DC</b> → menghasilkan sejumlah panas tertentu.</li>
+                <li>Hambatan yang sama diberi arus AC yang nilai RMS-nya <b>1 A</b> → menghasilkan <b>jumlah panas yang sama</b>.</li>
+                <li>Karena itulah nilai RMS disebut juga nilai <b>efektif</b> — nilai AC yang setara dengan DC dalam hal efek pemanasan.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="call idea">
+          <span class="h">Konsekuensi praktis</span>
+          Semua perhitungan daya, rugi, dan pemilihan penampang konduktor menggunakan nilai <b>RMS</b>.
+          Inilah alasan instrumen kualitas daya menghitung RMS dengan sangat hati-hati — dan mengapa
+          <b>RMS sejati (true RMS)</b> menjadi syarat, bukan pilihan.
+        </div>
+      </div>
+
+      <div class="col a" style="--d:.16s">
+        <div class="figwrap a" style="--d:.16s">
+          <div class="fig"><img src="assets/yoko_fig04_dcac.png" alt="Perbandingan gelombang DC dan AC dengan nilai kalor yang setara"></div>
+          <div class="figcap">DC bernilai tetap vs AC yang berubah terhadap waktu. Nilai RMS-lah yang menyetarakan keduanya dalam hal efek energi.</div>
+        </div>
+        <div class="card">
+          <h4><span class="ic">Σ</span> Satuan yang tidak boleh tertukar</h4>
+          <table class="tbl tight" style="margin-top:5px">
+            <tbody>
+              <tr><td style="width:38%"><b>Watt (W)</b></td><td>Daya <b>aktif</b> — daya yang benar-benar melakukan kerja</td></tr>
+              <tr><td><b>Watt-jam (Wh)</b></td><td><b>Energi</b> — daya dikalikan waktu</td></tr>
+              <tr><td><b>VA</b></td><td>Daya <b>semu</b> — hasil kali V<sub>rms</sub> dan I<sub>rms</sub></td></tr>
+              <tr><td><b>VAR</b></td><td>Daya <b>reaktif</b> — bolak-balik antara sumber dan beban</td></tr>
+            </tbody>
+          </table>
+          <p style="font-size:11.9px; color:var(--fg3); margin-top:7px">
+            Menuliskan kW sebagai kVA pada laporan adalah kesalahan yang mengubah kesimpulan secara keseluruhan.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pg"></div>
+</section>
+
+<!-- ============================ 23 ============================ -->
+<section class="slide" data-foot="Blok C · Dasar Daya Listrik" data-title="Daya AC">
+  <div class="s-head">
+    <div class="s-kicker">Blok C · Dasar Daya Listrik</div>
+    <h2 class="s-title">Daya AC</h2>
+    <p class="s-sub">Pada AC, tegangan dan arus berubah setiap saat — sehingga daya pun berubah setiap saat.</p>
+  </div>
+  <div class="s-body">
+    <div class="g2s fill">
+      <div class="col a" style="--d:.05s">
+        <div class="card">
+          <h4><span class="ic">∫</span> Daya sesaat dan daya rata-rata</h4>
+          <p style="font-size:13.2px; margin-bottom:8px">Daya sesaat adalah hasil kali tegangan sesaat dan arus sesaat:</p>
+          <div class="card pad-sm flat" style="text-align:center"><div class="mid mono" style="color:var(--accent)">p(t) = v(t) · i(t)</div></div>
+          <p style="font-size:13.2px; margin:10px 0 8px">Daya aktif adalah <b>nilai rata-rata</b> daya sesaat selama satu periode:</p>
+          <div class="card pad-sm flat" style="text-align:center"><div class="mid mono" style="color:var(--accent)">P = (1/T) · ∫ v(t)·i(t) dt</div></div>
+          <p style="font-size:12.8px; color:var(--fg2); margin-top:9px">
+            Instrumen digital menghitungnya dengan mengambil banyak sampel v dan i, mengalikannya titik per titik,
+            lalu merata-ratakan. <b>Jumlah sampel per siklus menentukan akurasi pada gelombang terdistorsi.</b>
+          </p>
+        </div>
+
+        <div class="card">
+          <h4><span class="ic">∿</span> Nilai RMS dan faktor puncak</h4>
+          <div class="g2" style="gap:11px; margin-top:6px">
+            <div class="card pad-sm flat">
+              <div class="chip">Untuk sinus murni</div>
+              <div class="mid mono" style="color:var(--accent); margin-top:6px; font-size:18.5px">V<sub>rms</sub> = V<sub>puncak</sub> / √2</div>
+              <p style="font-size:11.9px; margin-top:6px">Contoh: puncak 311 V → RMS ≈ 220 V.</p>
+            </div>
+            <div class="card pad-sm flat">
+              <div class="chip a2">Faktor puncak (crest factor)</div>
+              <div class="mid mono" style="color:var(--accent2); margin-top:6px; font-size:18.5px">CF = V<sub>puncak</sub> / V<sub>rms</sub></div>
+              <p style="font-size:11.9px; margin-top:6px">Sinus murni ≈ 1,414. Nilai yang jauh lebih tinggi menandakan <b>gelombang terdistorsi</b>.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="call warn">
+          <span class="h">Perhatikan batas rentang (out of range)</span>
+          Bila puncak gelombang melampaui rentang deteksi rangkaian masukan instrumen, nilai RMS dan harmonisa
+          menjadi <b>salah</b>. Menaikkan rentang menghindari hal ini, tetapi menurunkan resolusi.
+          Instrumen akan memberi <b>indikator peringatan</b> ketika hal ini terjadi — jangan diabaikan.
+        </div>
+      </div>
+
+      <div class="col a" style="--d:.16s">
+        <div class="figwrap a" style="--d:.16s">
+          <div class="fig"><img src="assets/yoko_fig03_acwaves.png" alt="Bentuk gelombang sinusoidal, segitiga, dan persegi"></div>
+          <div class="figcap">Bentuk gelombang yang berbeda dapat memiliki nilai RMS sama, tetapi faktor puncak dan kandungan harmonisanya berbeda.</div>
+        </div>
+        <div class="figwrap a" style="--d:.24s">
+          <div class="fig"><img src="assets/hioki_screen_waveform.png" alt="Layar bentuk gelombang pada analyzer"></div>
+          <div class="figcap">Layar gelombang pada analyzer. <b>Selalu periksa layar ini</b> sebelum mempercayai angka RMS — dari sinilah distorsi, notch, dan transient terlihat.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pg"></div>
+</section>
+
+<!-- ============================ 24 ============================ -->
+<section class="slide" data-foot="Blok C · Dasar Daya Listrik" data-title="Daya pada Sistem AC">
+  <div class="s-head">
+    <div class="s-kicker">Blok C · Dasar Daya Listrik</div>
+    <h2 class="s-title">Daya pada Sistem AC</h2>
+    <p class="s-sub">Begitu arus dan tegangan tidak lagi sefasa, sebagian daya <b>tidak bekerja</b> — ia hanya bolak-balik.</p>
+  </div>
+  <div class="s-body">
+    <div class="g2s fill">
+      <div class="col a" style="--d:.05s">
+        <div class="card">
+          <h4><span class="ic">φ</span> Pengaruh beda fasa (φ)</h4>
+          <p style="font-size:13.2px">
+            Ketika beban bersifat induktif atau kapasitif, arus tidak lagi sefasa dengan tegangan.
+            Akibatnya daya sesaat <b>p(t)</b> menjadi berayun: sebagian waktu bernilai positif (daya mengalir ke beban),
+            sebagian waktu bernilai negatif (daya kembali ke sumber).
+          </p>
+          <div class="g2" style="gap:11px; margin-top:9px">
+            <div class="card pad-sm flat">
+              <div class="chip gr">Resistif murni — φ = 0°</div>
+              <p style="font-size:12.3px; margin-top:5px">Daya sesaat selalu ≥ 0. Seluruh daya yang dikirim benar-benar dikonsumsi.</p>
+            </div>
+            <div class="card pad-sm flat">
+              <div class="chip a2">Induktif / kapasitif — φ ≠ 0°</div>
+              <p style="font-size:12.3px; margin-top:5px">Sebagian daya sesaat bernilai negatif → muncul komponen daya yang <b>tidak melakukan kerja</b>.</p>
+            </div>
+          </div>
+          <div class="card pad-sm flat" style="text-align:center; margin-top:11px">
+            <div class="mid mono" style="color:var(--accent)">P = V<sub>rms</sub> · I<sub>rms</sub> · cos φ</div>
+            <p style="font-size:11.9px; margin-top:5px">cos φ = faktor daya pergeseran (<i>displacement power factor</i>)</p>
+          </div>
+        </div>
+
+        <div class="call good">
+          <span class="h">Inti yang harus dipahami mahasiswa</span>
+          Arus yang mengalir pada konduktor tetap besar, tetapi daya yang benar-benar bekerja menjadi lebih kecil.
+          <b>Kabel, trafo, dan breaker tetap harus menanggung arus penuh</b> — inilah alasan daya reaktif
+          menjadi masalah teknis maupun ekonomis, meskipun ia "tidak melakukan kerja".
+        </div>
+      </div>
+
+      <div class="col a" style="--d:.16s">
+        <div class="figwrap a" style="--d:.16s">
+          <div class="fig"><img src="assets/yoko_fig11_instenergy.png" alt="Daya/energi sesaat dengan beda fasa"></div>
+          <div class="figcap">Daya sesaat pada beban dengan beda fasa — memperlihatkan komponen yang berayun bolak-balik dan komponen rata-rata yang benar-benar bekerja.</div>
+        </div>
+        <div class="figwrap a" style="--d:.24s">
+          <div class="fig"><img src="assets/yoko_fig07_phase.png" alt="Daya AC pada rangkaian resistif-induktif dan resistif-kapasitif"></div>
+          <div class="figcap">Perbandingan rangkaian resistif–induktif dan resistif–kapasitif: arah pergeseran fasa berlawanan, sehingga tanda daya reaktif juga berlawanan.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pg"></div>
+</section>
+
+<!-- ============================ 25 ============================ -->
+<section class="slide" data-foot="Blok C · Dasar Daya Listrik" data-title="Segitiga Daya &amp; Faktor Daya">
+  <div class="s-head">
+    <div class="s-kicker">Blok C · Dasar Daya Listrik</div>
+    <h2 class="s-title">Segitiga Daya &amp; Faktor Daya</h2>
+    <p class="s-sub">Geser pengatur di bawah untuk melihat bagaimana perubahan faktor daya mengubah komposisi P dan Q pada daya semu yang tetap.</p>
+  </div>
+  <div class="s-body">
+    <div class="g2s fill">
+      <div class="col a" style="--d:.05s">
+        <div class="card" style="flex:0 0 auto">
+          <h4><span class="ic">◺</span> Tiga jenis daya</h4>
+          <table class="tbl tight" style="margin-top:5px">
+            <thead><tr><th style="width:26%">Daya</th><th style="width:18%">Simbol / satuan</th><th>Rumus &amp; arti</th></tr></thead>
+            <tbody>
+              <tr><td><b>Aktif</b> (nyata)</td><td><b>P</b> · watt (W)</td><td><b>P = V<sub>rms</sub> · I<sub>rms</sub> · cos φ</b> — daya yang benar-benar melakukan kerja</td></tr>
+              <tr><td><b>Semu</b></td><td><b>S</b> · VA</td><td><b>S = V<sub>rms</sub> · I<sub>rms</sub></b> — "daya yang terlihat"; menentukan ukuran peralatan</td></tr>
+              <tr><td><b>Reaktif</b></td><td><b>Q</b> · VAR</td><td><b>Q = V<sub>rms</sub> · I<sub>rms</sub> · sin φ</b> — bolak-balik antara sumber &amp; beban</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card" style="flex:0 0 auto">
+          <h4><span class="ic">⇔</span> Faktor daya</h4>
+          <div class="g2" style="gap:11px; margin-top:6px">
+            <div class="card pad-sm flat" style="text-align:center"><div class="mid mono" style="color:var(--accent)">PF = P / S</div><p style="font-size:11.9px; margin-top:5px">Definisi umum — selalu berlaku</p></div>
+            <div class="card pad-sm flat" style="text-align:center"><div class="mid mono" style="color:var(--accent)">PF = cos φ</div><p style="font-size:11.9px; margin-top:5px">Hanya bila gelombang <b>sinusoidal murni</b></p></div>
+          </div>
+          <div class="g2" style="gap:11px; margin-top:11px">
+            <div class="card pad-sm flat" style="text-align:center"><div class="mid mono" style="color:var(--violet); font-size:17.6px">Q = √(S² − P²)</div></div>
+            <div class="card pad-sm flat" style="text-align:center"><div class="mid mono" style="color:var(--violet); font-size:17.6px">S² = P² + Q²</div></div>
+          </div>
+        </div>
+
+        <div class="call bad">
+          <span class="h">Jangan tertukar — PF vs DPF</span>
+          Bila gelombang mengandung harmonisa, <b>PF ≠ cos φ</b>. Yang berlaku adalah
+          <b>PF = DPF × PF<sub>distorsi</sub></b>, dengan DPF = cos φ<sub>1</sub> dihitung dari komponen dasar saja.
+          Karena itu instrumen menampilkan <b>PF</b> dan <b>DPF</b> secara terpisah. Selalu sebutkan yang mana
+          yang Anda kutip dalam laporan.
+        </div>
+      </div>
+
+      <div class="col a" style="--d:.16s">
+        <div class="card" style="flex:1 1 auto; display:flex; flex-direction:column">
+          <div class="row" style="justify-content:space-between; align-items:baseline">
+            <h4 style="margin:0"><span class="ic">◺</span> Segitiga daya interaktif</h4>
+            <span class="chip">S tetap = 100 kVA</span>
+          </div>
+          <svg id="ptSvg" viewBox="0 0 640 330" style="width:100%; flex:1 1 auto; min-height:0">
+            <rect x="0" y="0" width="640" height="330" fill="none"/>
+            <line x1="70" y1="300" x2="600" y2="300" stroke="var(--line2)" stroke-width="1.5"/>
+            <line x1="70" y1="30" x2="70" y2="300" stroke="var(--line2)" stroke-width="1.5"/>
+            <text x="70" y="322" font-size="13" fill="var(--fg3)" text-anchor="middle">P (kW) →</text>
+            <text x="26" y="40" font-size="13" fill="var(--fg3)">Q (kVAR) ↑</text>
+            <path id="ptArc" d="" fill="none" stroke="var(--accent2)" stroke-width="2.5"/>
+            <line id="ptP" x1="70" y1="300" x2="300" y2="300" stroke="var(--green)" stroke-width="7" stroke-linecap="round"/>
+            <line id="ptQ" x1="300" y1="300" x2="300" y2="150" stroke="var(--rose)" stroke-width="7" stroke-linecap="round"/>
+            <line id="ptS" x1="70" y1="300" x2="300" y2="150" stroke="var(--accent)" stroke-width="7" stroke-linecap="round"/>
+            <circle id="ptDot" cx="300" cy="150" r="7" fill="var(--accent)"/>
+            <text id="ptPlab" x="150" y="292" font-size="15" font-weight="700" fill="var(--green)" text-anchor="middle">P</text>
+            <text id="ptQlab" x="312" y="225" font-size="15" font-weight="700" fill="var(--rose)">Q</text>
+            <text id="ptSlab" x="180" y="216" font-size="15" font-weight="700" fill="var(--accent)">S</text>
+            <text id="ptPhi" x="112" y="288" font-size="14" font-weight="700" fill="var(--accent2)">φ</text>
+          </svg>
+          <div class="row" style="gap:14px; align-items:center; margin-top:8px">
+            <label class="lab" style="flex:0 0 auto">Faktor daya (PF)</label>
+            <input class="range" id="pfRange" type="range" min="30" max="100" value="80" step="1" style="flex:1 1 auto">
+            <span id="pfVal" class="chip" style="flex:0 0 auto; font-size:13.2px">0,80</span>
+          </div>
+          <div class="g4" style="gap:10px; margin-top:10px">
+            <div class="card pad-sm flat" style="text-align:center"><div class="chip">Sudut φ</div><div class="mid" id="ptPhiVal" style="color:var(--accent2)">36,9°</div></div>
+            <div class="card pad-sm flat" style="text-align:center"><div class="chip gr">Daya aktif P</div><div class="mid" id="ptPVal" style="color:var(--green)">80 kW</div></div>
+            <div class="card pad-sm flat" style="text-align:center"><div class="chip ro">Daya reaktif Q</div><div class="mid" id="ptQVal" style="color:var(--rose)">60 kVAR</div></div>
+            <div class="card pad-sm flat" style="text-align:center"><div class="chip">Daya semu S</div><div class="mid" id="ptSVal" style="color:var(--accent)">100 kVA</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pg"></div>
+</section>
+
+<!-- ============================ 26 ============================ -->
+<section class="slide" data-foot="Blok C · Dasar Daya Listrik" data-title="Representasi Vektor Arus &amp; Tegangan AC">
+  <div class="s-head">
+    <div class="s-kicker">Blok C · Dasar Daya Listrik</div>
+    <h2 class="s-title">Representasi Vektor Arus &amp; Tegangan AC</h2>
+    <p class="s-sub">Diagram vektor mengubah gelombang yang berubah terhadap waktu menjadi gambar yang dapat dibaca dalam sekejap.</p>
+  </div>
+  <div class="s-body">
+    <div class="g2s fill">
+      <div class="col a" style="--d:.05s">
+        <div class="card" style="flex:0 0 auto">
+          <h4><span class="ic">↻</span> Dari gelombang ke vektor</h4>
+          <div class="row" style="gap:16px; align-items:center; margin-top:6px">
+            <svg viewBox="0 0 640 250" style="flex:1 1 58%; min-height:0">
+              <circle cx="150" cy="125" r="88" fill="none" stroke="var(--line2)" stroke-width="1.3"/>
+              <line x1="150" y1="37" x2="150" y2="213" stroke="var(--line)" stroke-width="1" stroke-dasharray="4 4"/>
+              <line x1="62" y1="125" x2="238" y2="125" stroke="var(--line)" stroke-width="1" stroke-dasharray="4 4"/>
+              <g>
+                <animateTransform attributeName="transform" type="rotate" from="0 150 125" to="360 150 125" dur="5s" repeatCount="indefinite"/>
+                <line x1="150" y1="125" x2="150" y2="37" stroke="var(--accent)" stroke-width="3.5" stroke-linecap="round"/>
+                <circle cx="150" cy="37" r="7" fill="var(--accent)"/>
+              </g>
+              <line x1="150" y1="125" x2="238" y2="125" stroke="var(--accent2)" stroke-width="3" stroke-linecap="round"/>
+              <text x="150" y="242" font-size="13" fill="var(--fg3)" text-anchor="middle">Vektor berputar</text>
+              <line x1="290" y1="125" x2="620" y2="125" stroke="var(--line2)" stroke-width="1.2" stroke-dasharray="5 5"/>
+              <path d="M290,125 C315,45 340,45 365,125 C390,205 415,205 440,125 C465,45 490,45 515,125 C540,205 565,205 590,125 C600,95 610,78 620,70"
+                    fill="none" stroke="var(--accent)" stroke-width="4" stroke-linecap="round"/>
+              <text x="455" y="242" font-size="13" fill="var(--fg3)" text-anchor="middle">Proyeksi ke sumbu waktu = gelombang sinus</text>
+            </svg>
+            <div style="flex:1 1 42%">
+              <ul class="bl tight">
+                <li>Setiap besaran sinusoidal dapat diwakili sebuah <b>vektor (phasor)</b>: panjangnya menyatakan nilai RMS, sudutnya menyatakan fasa.</li>
+                <li>Sudut antara vektor tegangan dan vektor arus adalah <b>φ</b> — dasar dari faktor daya.</li>
+                <li>Dengan vektor, penjumlahan besaran AC menjadi penjumlahan <b>vektor</b>, bukan penjumlahan aritmetika biasa.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h4><span class="ic">⤳</span> Tiga sifat beban — cara membaca arah pergeseran</h4>
+          <table class="tbl tight" style="margin-top:5px">
+            <thead><tr><th style="width:24%">Jenis beban</th><th style="width:20%">Posisi arus</th><th>Penjelasan</th></tr></thead>
+            <tbody>
+              <tr><td><b>Resistif</b></td><td><span class="chip gr">Sefasa</span></td><td>Arus dan tegangan mencapai puncak bersamaan. φ = 0°, PF = 1.</td></tr>
+              <tr><td><b>Induktif</b></td><td><span class="chip a2">Tertinggal</span></td><td>Arus mencapai puncak <b>setelah</b> tegangan. Umum pada motor, trafo, ballast magnetik. Menghasilkan daya reaktif <i>lag</i>.</td></tr>
+              <tr><td><b>Kapasitif</b></td><td><span class="chip vi">Mendahului</span></td><td>Arus mencapai puncak <b>sebelum</b> tegangan. Umum pada bank kapasitor. Menghasilkan daya reaktif <i>lead</i>.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="col a" style="--d:.16s">
+        <div class="figwrap a" style="--d:.16s">
+          <div class="fig"><img src="assets/yoko_fig10_loadtypes.png" alt="Tabel jenis beban: rangkaian, bentuk gelombang, dan diagram vektor"></div>
+          <div class="figcap">Jenis beban, rangkaian ekivalen, bentuk gelombang, dan diagram vektor. Pada beban induktif arus <b>tertinggal 90°</b>; pada beban kapasitif arus <b>mendahului 90°</b>.</div>
+        </div>
+        <div class="figwrap a" style="--d:.24s">
+          <div class="fig"><img src="assets/yoko_fig08_sinephase.png" alt="Gelombang sinus dengan lingkaran fasa"></div>
+          <div class="figcap">Satu siklus gelombang sinus dipetakan pada lingkaran fasa — dasar konversi gelombang ↔ vektor.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pg"></div>
+</section>
+
+<!-- ============================ 27 ============================ -->
+<section class="slide" data-foot="Blok C · Dasar Daya Listrik" data-title="Sistem Daya AC &amp; Beban Listrik AC">
+  <div class="s-head">
+    <div class="s-kicker">Blok C · Dasar Daya Listrik</div>
+    <h2 class="s-title">Sistem Daya AC &amp; Beban Listrik AC</h2>
+    <p class="s-sub">Konfigurasi sistem menentukan bagaimana kita memasang instrumen; sifat beban menentukan apa yang akan kita lihat di layar.</p>
+  </div>
+  <div class="s-body">
+    <div class="g2s fill">
+      <div class="col a" style="--d:.05s">
+        <div class="card" style="flex:0 0 auto">
+          <h4><span class="ic">△</span> Konfigurasi sistem — delta dan bintang</h4>
+          <div class="row" style="gap:16px; align-items:center; margin-top:6px">
+            <div class="fig" style="flex:1 1 52%; padding:6px"><img src="assets/yoko_fig20_deltastar.png" alt="Konfigurasi delta dan bintang"></div>
+            <div style="flex:1 1 48%">
+              <ul class="bl tight">
+                <li><b>Bintang (star / Y):</b> tersedia titik netral → memungkinkan penyaluran beban satu fasa dan tiga fasa sekaligus. Diukur sebagai <b>3P4W</b>.</li>
+                <li><b>Delta (Δ):</b> tanpa netral → umum pada sistem industri dan beban motor. Diukur sebagai <b>3P3W</b>.</li>
+                <li>Keduanya dapat diubah satu sama lain melalui transformator; pilihan menentukan tegangan fasa dan tegangan line yang tersedia.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="flex:0 0 auto">
+          <h4><span class="ic">◉</span> Hubungan tegangan &amp; arus tiga fasa seimbang</h4>
+          <div class="g3" style="gap:10px; margin-top:6px">
+            <div class="card pad-sm flat" style="text-align:center"><div class="chip">Bintang</div><div class="mid mono" style="color:var(--accent); font-size:16.7px; margin-top:5px">V<sub>LL</sub> = √3 · V<sub>LN</sub></div><p style="font-size:11.4px; margin-top:4px">I<sub>L</sub> = I<sub>fasa</sub></p></div>
+            <div class="card pad-sm flat" style="text-align:center"><div class="chip a2">Delta</div><div class="mid mono" style="color:var(--accent2); font-size:16.7px; margin-top:5px">I<sub>L</sub> = √3 · I<sub>fasa</sub></div><p style="font-size:11.4px; margin-top:4px">V<sub>LL</sub> = V<sub>fasa</sub></p></div>
+            <div class="card pad-sm flat" style="text-align:center"><div class="chip gr">Contoh 50 Hz</div><div class="mid mono" style="color:var(--green); font-size:16.7px; margin-top:5px">400 V = √3 · 231 V</div><p style="font-size:11.4px; margin-top:4px">Sistem LV umum</p></div>
+          </div>
+        </div>
+
+        <div class="call idea">
+          <span class="h">Mengapa ini penting saat memasang alat</span>
+          Memilih mode pengkabelan yang salah membuat seluruh hasil pengukuran <b>tidak berarti</b> —
+          meskipun alat menunjukkan angka yang tampak wajar. Diagram vektor adalah cara memverifikasinya
+          dalam hitungan detik.
+        </div>
+      </div>
+
+      <div class="col a" style="--d:.16s">
+        <div class="card" style="flex:1 1 auto">
+          <h4><span class="ic">⌁</span> Beban listrik AC — empat kategori</h4>
+          <table class="tbl tight" style="margin-top:5px">
+            <thead><tr><th style="width:20%">Kategori</th><th style="width:24%">Contoh</th><th>Dampak terhadap kualitas daya</th></tr></thead>
+            <tbody>
+              <tr><td><b>Resistif</b></td><td>Pemanas, lampu pijar, elemen pemanas</td><td>PF ≈ 1, bentuk gelombang tetap sinusoidal. Tidak menimbulkan harmonisa.</td></tr>
+              <tr><td><b>Induktif</b></td><td>Motor induksi, transformator, ballast magnetik</td><td>PF menurun (arus tertinggal) → kebutuhan daya reaktif meningkat. Dapat beresonansi dengan kapasitor kompensasi.</td></tr>
+              <tr><td><b>Kapasitif</b></td><td>Bank kapasitor, kabel panjang berkapasitansi besar</td><td>Arus mendahului; pada kondisi tertentu memperbesar tegangan dan memicu resonansi.</td></tr>
+              <tr><td><b>Non-linear</b></td><td>VFD, inverter, SMPS, LED driver, rectifier, UPS, pengisi EV</td><td><b>Menimbulkan harmonisa</b> dan interharmonisa. PF menurun bukan hanya karena pergeseran fasa, tetapi karena distorsi. Arus netral dapat membesar.</td></tr>
+            </tbody>
+          </table>
+          <div class="call warn" style="margin-top:9px">
+            <span class="h">Kelompok beban yang paling menantang di industri modern</span>
+            <b>Beban non-linear</b> — karena masalahnya tidak terlihat dari nilai RMS saja. Tegangan dan arus tampak
+            "normal", tetapi bentuk gelombangnya sudah terdistorsi. Diperlukan pengukuran <b>harmonisa</b> dan
+            pemeriksaan <b>bentuk gelombang</b>, bukan hanya pembacaan angka.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pg"></div>
+</section>
+
+<!-- ============================ 28 ============================ -->
+<section class="slide" data-foot="Blok C · Penutup Blok" data-title="Vektor Tiga Fasa, PF Tiga Fasa, PQS &amp; Hubungan Daya AC">
+  <div class="s-head">
+    <div class="s-kicker">Blok C · Penutup Blok</div>
+    <h2 class="s-title">Vektor Tiga Fasa · PF Tiga Fasa · P-Q-S · Hubungan Daya AC</h2>
+    <p class="s-sub">Rangkuman seluruh hubungan daya AC yang harus Anda kuasai sebelum membaca hasil pengukuran.</p>
+  </div>
+  <div class="s-body">
+    <div class="g2s fill">
+      <div class="col a" style="--d:.05s">
+        <div class="figwrap a" style="--d:.05s">
+          <div class="fig"><img src="assets/yoko_3phase_vectors.png" alt="Diagram vektor tiga fasa untuk konfigurasi delta dan bintang"></div>
+          <div class="figcap">Diagram vektor tiga fasa untuk konfigurasi <b>delta</b> dan <b>bintang</b>. Pada sistem seimbang, ketiga vektor sama panjang dan berjarak 120°.</div>
+        </div>
+        <div class="figwrap a" style="--d:.14s">
+          <div class="fig"><img src="assets/yoko_3p3w_vectors.png" alt="Diagram vektor pengukuran 3 fasa 3 kawat"></div>
+          <div class="figcap">Diagram vektor pengukuran 3P3W. Pada layar PQ3100, vektor yang benar membentuk <b>bentuk kipas (fan shape)</b> — penyimpangan dari bentuk ini menandakan pengkabelan atau orientasi clamp salah.</div>
+        </div>
+      </div>
+
+      <div class="col a" style="--d:.16s">
+        <div class="card" style="flex:0 0 auto">
+          <h4><span class="ic">⛭</span> Pengukuran tiga fasa — mengapa perlu beberapa wattmeter</h4>
+          <div class="row" style="gap:14px; align-items:center; margin-top:6px">
+            <div class="fig" style="flex:0 0 32%; padding:5px"><img src="assets/yoko_3p3w_deriv.png" alt="Penurunan rumus metode dua wattmeter"></div>
+            <div style="flex:1 1 56%">
+              <p style="font-size:12.8px">
+                <b>Teorema Blondel:</b> untuk sistem dengan <i>N</i> konduktor, daya total dapat diukur dengan
+                <b><i>N</i> − 1</b> wattmeter. Sistem 3 kawat cukup diukur dengan <b>2 wattmeter</b>; daya totalnya adalah
+                <b>jumlah aljabar</b> kedua pembacaan — termasuk bila salah satunya negatif. Untuk mengukur arus
+                <b>setiap</b> fasa secara individual, digunakan mode <b>3P3W3M</b>.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="flex:1 1 auto">
+          <h4><span class="ic">Σ</span> Hubungan daya AC — tabel rujukan lengkap</h4>
+          <table class="tbl tight" style="margin-top:5px">
+            <thead><tr><th style="width:32%">Hubungan</th><th style="width:34%">Rumus</th><th>Berlaku bila</th></tr></thead>
+            <tbody>
+              <tr><td><b>Daya semu</b> (S)</td><td class="mono">S = V<sub>rms</sub> · I<sub>rms</sub></td><td>Selalu — termasuk gelombang terdistorsi</td></tr>
+              <tr><td><b>Daya aktif</b> (P)</td><td class="mono">P = V<sub>rms</sub> · I<sub>rms</sub> · cos φ</td><td>Gelombang sinusoidal</td></tr>
+              <tr><td><b>Daya reaktif</b> (Q)</td><td class="mono">Q = √(S² − P²)</td><td>Selalu — turunan dari S dan P</td></tr>
+              <tr><td><b>Faktor daya</b> (PF)</td><td class="mono">PF = P / S</td><td>Selalu berlaku</td></tr>
+              <tr><td><b>DPF &amp; PF berharmonisa</b></td><td class="mono">DPF = cos φ₁ &nbsp;·&nbsp; PF = DPF · PF<sub>distorsi</sub></td><td>DPF dari komponen dasar saja</td></tr>
+              <tr><td><b>Daya tiga fasa seimbang</b></td><td class="mono">P = √3 · V<sub>LL</sub> · I<sub>L</sub> · cos φ</td><td>Tiga fasa <b>seimbang</b> &amp; sinusoidal</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="pg"></div>
+</section>
+
+<!-- ============================ 29 ============================ -->
+<section class="slide" data-foot="Review Materi · Blok C" data-title="KUIS 2 — Review Materi">
+  <div class="s-head">
+    <div class="s-kicker">Review Materi · Kuis 2 dari 2</div>
+    <h2 class="s-title">Kuis 2 — Dasar Daya Listrik AC</h2>
+    <p class="s-sub">Klik jawaban yang Anda anggap benar. Umpan balik muncul seketika. Skor: <span id="q2score">0 / 5</span></p>
+  </div>
+  <div class="s-body">
+    <div class="quiz" id="quiz2" style="flex:1 1 auto">
+      <div class="q" data-ans="b">
+        <div class="qt">1. Pada beban induktif (misalnya motor induksi), arus…</div>
+        <div class="opts">
+          <button class="opt" data-k="a"><span class="lk">A</span><span>Sefasa dengan tegangan</span></button>
+          <button class="opt" data-k="b"><span class="lk">B</span><span>Tertinggal (lagging) terhadap tegangan</span></button>
+          <button class="opt" data-k="c"><span class="lk">C</span><span>Mendahului (leading) tegangan</span></button>
+          <button class="opt" data-k="d"><span class="lk">D</span><span>Selalu bernilai nol</span></button>
+        </div>
+        <div class="fb"><b>B.</b> Beban induktif bersifat <b>lagging</b> — arus mencapai puncak setelah tegangan. Beban kapasitif bersifat <b>leading</b>, sedangkan beban resistif sefasa. Arah pergeseran inilah yang menentukan tanda daya reaktif pada instrumen.</div>
+      </div>
+
+      <div class="q" data-ans="c">
+        <div class="qt">2. Daya aktif (daya nyata) pada sistem AC dihitung dengan…</div>
+        <div class="opts">
+          <button class="opt" data-k="a"><span class="lk">A</span><span>P = V<sub>rms</sub> × I<sub>rms</sub></span></button>
+          <button class="opt" data-k="b"><span class="lk">B</span><span>P = V<sub>rms</sub> × I<sub>rms</sub> × sin φ</span></button>
+          <button class="opt" data-k="c"><span class="lk">C</span><span>P = V<sub>rms</sub> × I<sub>rms</sub> × cos φ</span></button>
+          <button class="opt" data-k="d"><span class="lk">D</span><span>P = V<sub>puncak</sub> × I<sub>puncak</sub></span></button>
+        </div>
+        <div class="fb"><b>C.</b> Daya aktif <b>P = V<sub>rms</sub> · I<sub>rms</sub> · cos φ</b>. Perhatikan: <i>V<sub>rms</sub> × I<sub>rms</sub></i> adalah <b>daya semu (S)</b>, sedangkan bentuk dengan <i>sin φ</i> adalah <b>daya reaktif (Q)</b>.</div>
+      </div>
+
+      <div class="q" data-ans="a">
+        <div class="qt">3. Satuan daya semu (apparent power) adalah…</div>
+        <div class="opts">
+          <button class="opt" data-k="a"><span class="lk">A</span><span>VA (volt-ampere)</span></button>
+          <button class="opt" data-k="b"><span class="lk">B</span><span>W (watt)</span></button>
+          <button class="opt" data-k="c"><span class="lk">C</span><span>VAR (volt-ampere reaktif)</span></button>
+          <button class="opt" data-k="d"><span class="lk">D</span><span>Wh (watt-jam)</span></button>
+        </div>
+        <div class="fb"><b>A.</b> Daya semu S dalam <b>VA</b>; daya aktif P dalam <b>W</b>; daya reaktif Q dalam <b>VAR</b>; energi dalam <b>Wh</b>. Peralatan harus dirancang untuk <b>VA</b>, bukan hanya untuk <b>W</b>.</div>
+      </div>
+
+      <div class="q" data-ans="b">
+        <div class="qt">4. Sebuah beban memiliki daya semu S = 100 kVA dengan faktor daya PF = 0,8. Daya aktifnya adalah…</div>
+        <div class="opts">
+          <button class="opt" data-k="a"><span class="lk">A</span><span>60 kW</span></button>
+          <button class="opt" data-k="b"><span class="lk">B</span><span>80 kW</span></button>
+          <button class="opt" data-k="c"><span class="lk">C</span><span>100 kW</span></button>
+          <button class="opt" data-k="d"><span class="lk">D</span><span>125 kW</span></button>
+        </div>
+        <div class="fb"><b>B.</b> P = S · PF = 100 kVA × 0,8 = <b>80 kW</b>. Daya reaktifnya Q = √(S² − P²) = √(100² − 80²) = √3600 = <b>60 kVAR</b>. Jadi dari 100 kVA yang harus disediakan sistem, hanya 80 kW yang benar-benar bekerja.</div>
+      </div>
+
+      <div class="q" data-ans="d">
+        <div class="qt">5. Untuk sistem tiga fasa <u>seimbang</u> dan sinusoidal, daya aktif total dihitung dengan…</div>
+        <div class="opts">
+          <button class="opt" data-k="a"><span class="lk">A</span><span>P = 3 × V<sub>fasa</sub> × I<sub>fasa</sub></span></button>
+          <button class="opt" data-k="b"><span class="lk">B</span><span>P = √3 × V<sub>LL</sub> × I<sub>L</sub></span></button>
+          <button class="opt" data-k="c"><span class="lk">C</span><span>P = V<sub>LL</sub> × I<sub>L</sub> × cos φ</span></button>
+          <button class="opt" data-k="d"><span class="lk">D</span><span>P = √3 × V<sub>LL</sub> × I<sub>L</sub> × cos φ</span></button>
+        </div>
+        <div class="fb"><b>D.</b> Untuk sistem tiga fasa seimbang: <b>P = √3 · V<sub>LL</sub> · I<sub>L</sub> · cos φ</b>. Tanpa <i>cos φ</i>, hasilnya adalah daya <b>semu</b> tiga fasa (dalam VA), bukan daya aktif. Faktor √3 muncul dari hubungan V<sub>LL</sub> = √3 · V<sub>LN</sub> pada sambungan bintang.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pg"></div>
+</section>
+
+<!-- ============================ 30 ============================ -->
+<section class="slide" data-foot="Penutup · Minggu 1" data-title="Penutup — Resume &amp; Kesimpulan">
+  <div class="s-head">
+    <div class="s-kicker">Penutup · Resume &amp; Kesimpulan</div>
+    <h2 class="s-title">Bekal Menuju Praktikum dengan HIOKI PQ3100</h2>
+    <p class="s-sub">Enam hal yang harus Anda bawa ke laboratorium minggu depan.</p>
+  </div>
+  <div class="s-body">
+    <div class="g3 a" style="--d:.05s">
+      <div class="card">
+        <div class="tag">Resume 1</div>
+        <h4>Kualitas daya adalah <i>kesesuaian</i></h4>
+        <p style="font-size:12.8px">Bukan satu angka, melainkan hubungan antara apa yang disalurkan sistem dan apa yang dibutuhkan peralatan. Karena itu hasil ukur selalu harus disertai <b>parameter, agregasi, lokasi, dan kondisi</b>.</p>
+      </div>
+      <div class="card">
+        <div class="tag">Resume 2</div>
+        <h4>Bedakan standar cara-mengukur dan batasan</h4>
+        <p style="font-size:12.8px"><b>IEC 61000-4-30 / 4-7 / 4-15</b> dan <b>IEEE 1159</b> mengatur <i>cara mengukur</i> dan terminologi. <b>EN 50160</b>, <b>IEEE 519</b>, serta dokumen Indonesia (<b>SPLN D5.004-1:2012</b>, Permen/Kepmen ESDM, PUIL) memuat <i>batasan</i>. Mencampur keduanya adalah sumber kesalahan paling umum.</p>
+      </div>
+      <div class="card">
+        <div class="tag">Resume 3</div>
+        <h4>Kelas pengukuran adalah sifat konfigurasi</h4>
+        <p style="font-size:12.8px"><b>PQ3100 = Class S</b> (survei kualitatif &amp; troubleshooting) · <b>PQ3198 = Class A</b> (kontraktual). Namun wiring yang salah, sensor yang tidak sesuai, atau jam yang tidak terverifikasi membuat <i>kelas apa pun</i> kehilangan maknanya.</p>
+      </div>
+      <div class="card">
+        <div class="tag">Resume 4</div>
+        <h4>Urutan prosedur tidak boleh dilompati</h4>
+        <p style="font-size:12.8px"><b>Tujuan → masalah → lokasi → ukur → olah data → bandingkan → interpretasi → rekomendasi → kesimpulan.</b> Melompat langsung dari data ke kesimpulan adalah penyebab utama laporan yang tidak dapat dipertanggungjawabkan.</p>
+      </div>
+      <div class="card">
+        <div class="tag">Resume 5</div>
+        <h4>Dasar daya AC adalah bahasa hasil ukur</h4>
+        <p style="font-size:12.8px"><b>S = V·I</b> adalah definisi dasar; <b>P</b>, <b>Q</b>, dan <b>PF</b> adalah turunannya. Pada sistem tiga fasa seimbang: <b>P = √3·V<sub>LL</sub>·I<sub>L</sub>·cos φ</b>. Tanpa memahami ini, angka di layar tidak dapat diinterpretasikan.</p>
+      </div>
+      <div class="card">
+        <div class="tag">Resume 6</div>
+        <h4>Lihat gelombang sebelum percaya angka</h4>
+        <p style="font-size:12.8px">Kebiasaan paling berharga yang dapat Anda bawa ke industri: <b>periksa bentuk gelombang, diagram vektor, dan nilai sesaat</b> sebelum menekan START dan sebelum melaporkan hasil.</p>
+      </div>
+    </div>
+
+    <div class="g2s fill">
+      <div class="card a" style="--d:.2s">
+        <h4><span class="ic">✓</span> Daftar periksa kesiapan praktikum</h4>
+        <table class="tbl tight" style="margin-top:5px">
+          <tbody>
+            <tr><td style="width:34%"><b>1. Konsep</b></td><td>Mampu menjelaskan P, Q, S, PF dan satuannya tanpa membaca catatan</td></tr>
+            <tr><td><b>2. Standar</b></td><td>Mampu menyebutkan standar <i>cara mengukur</i> dan standar <i>batasan</i> beserta perbedaannya</td></tr>
+            <tr><td><b>3. Alat</b></td><td>Mengenali fungsi setiap tombol dan terminal PQ3100</td></tr>
+            <tr><td><b>4. Keselamatan</b></td><td>Mengetahui urutan K3 dan mampu menjelaskan mengapa zero adjustment dilakukan sebelum clamp terpasang</td></tr>
+            <tr><td><b>5. Prosedur</b></td><td>Mampu menuliskan sembilan langkah analisis secara berurutan beserta keluaran setiap langkah</td></tr>
+            <tr><td><b>6. Interpretasi</b></td><td>Mampu menjelaskan arti sebuah nilai RMS, THD, atau PF <b>dan</b> menyebutkan syarat validitasnya</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="col a" style="--d:.28s">
+        <div class="card">
+          <h4><span class="ic">📚</span> Sumber yang digunakan pada minggu ini</h4>
+          <ul class="bl tight" style="gap:5px">
+            <li><b>HIOKI</b> — <i>Guidebook for Power Quality Measurement</i> (A_UG_PQ0004E02, 2020) · <i>Measurement Guide PQ3198</i> · <i>Selection Guide E6-61E</i> · <i>Instruction Manual PQ3198</i> · <i>Voltage, Current, and Power Measurement for Cycle-controlled / Phase-controlled Loads and Inverters</i></li>
+            <li><b>Yokogawa</b> — <i>Fundamentals of Electric Power Measurements</i> (White Paper v2, 2020)</li>
+            <li><b>Arrillaga &amp; Watson</b> — <i>Power System Harmonics</i>, Wiley (2003), §1.3</li>
+            <li><b>Santoso, Beaty, Dugan &amp; McGranaghan</b> — <i>Electrical Power Systems Quality</i></li>
+            <li><b>Bollen</b> — <i>Understanding Power Quality Problems</i> (2000) · <b>Baggini</b> — <i>Handbook of Power Quality</i> (2008) · <b>Kusko &amp; Thompson</b> (2007)</li>
+            <li><b>Halaman pembelajaran HIOKI</b> — <i>Power Quality</i> (hioki.com/us-en/learning/electricity/power-quality.html)</li>
+          </ul>
+        </div>
+        <div class="call idea">
+          <span class="h">Minggu berikutnya</span>
+          <b>Pengukuran dan Analisis Kualitas Daya dengan HIOKI PQ3100:</b> konfigurasi instrumen pada perangkat nyata,
+          pemasangan clamp dan voltage cord, verifikasi wiring melalui diagram vektor, perekaman data,
+          dan analisis hasil pada perangkat lunak PQ ONE.
+          <br><br>
+          <b>Bawa:</b> catatan rumus dari Blok C, kalkulator, dan APD laboratorium.
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pg"></div>
+</section>
+
+
+</div></div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------- slide navigation ---------------- */
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var total = slides.length;
+  var cur = 3;
+
+  var stage    = document.getElementById('stage');
+  var counter  = document.getElementById('counter');
+  var progress = document.getElementById('progress');
+  var hintbar  = document.getElementById('hintbar');
+  var outline  = document.getElementById('outline');
+  var olist    = document.getElementById('olist');
+  var btnPrev  = document.getElementById('btnPrev');
+  var btnNext  = document.getElementById('btnNext');
+
+  /* slide numbers */
+  slides.forEach(function(s, i){
+    var pg = s.querySelector('.pg');
+    if (pg) pg.innerHTML = '<b>' + (i+1) + '</b> / ' + total;
+  });
+
+  /* fit stage to viewport */
+  function fit(){
+    var s = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
+    stage.style.setProperty('--s', s);
+  }
+  window.addEventListener('resize', fit);
+  fit();
+
+  function render(){
+    slides.forEach(function(s, i){ s.classList.toggle('active', i === cur); });
+    counter.innerHTML = (cur+1) + ' <span>/ ' + total + '</span>';
+    progress.style.width = ((cur+1) / total * 100) + '%';
+    btnPrev.disabled = (cur === 0);
+    btnNext.disabled = (cur === total - 1);
+    var items = olist.querySelectorAll('.oitem');
+    for (var i = 0; i < items.length; i++) items[i].classList.toggle('cur', i === cur);
+    var curItem = olist.querySelector('.oitem.cur');
+    if (curItem && outline.classList.contains('open')) curItem.scrollIntoView({block:'nearest'});
+  }
+
+  function goTo(i){
+    if (i < 0 || i >= total || i === cur) return;
+    cur = i;
+    render();
+  }
+  function next(){ goTo(cur + 1); }
+  function prev(){ goTo(cur - 1); }
+
+  /* ---------------- outline drawer ---------------- */
+  var sections = [
+    {at:0,  label:'Pembuka'},
+    {at:2,  label:'Blok A · Konsep & Standar'},
+    {at:10, label:'Blok B · Instrumen & Pengukuran'},
+    {at:19, label:'Blok C · Dasar Daya Listrik AC'},
+    {at:28, label:'Blok D · Review & Penutup'}
+  ];
+  (function buildOutline(){
+    var html = '';
+    slides.forEach(function(s, i){
+      sections.forEach(function(sec){
+        if (sec.at === i) html += '<div class="osep">' + sec.label + '</div>';
+      });
+      var t = s.getAttribute('data-title') || ('Slide ' + (i+1));
+      html += '<div class="oitem" data-i="' + i + '"><div class="n">' + (i+1) + '</div><div>' + t + '</div></div>';
+    });
+    olist.innerHTML = html;
+    olist.addEventListener('click', function(e){
+      var it = e.target.closest ? e.target.closest('.oitem') : null;
+      if (!it) return;
+      goTo(parseInt(it.getAttribute('data-i'), 10));
+      outline.classList.remove('open');
+    });
+  })();
+
+  /* ---------------- fullscreen ---------------- */
+  function toggleFull(){
+    var el = document.documentElement;
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+      if (el.requestFullscreen) el.requestFullscreen();
+      else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    } else {
+      if (document.exitFullscreen) document.exitFullscreen();
+      else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+    }
+  }
+  document.addEventListener('fullscreenchange', fit);
+  document.addEventListener('webkitfullscreenchange', fit);
+
+  /* ---------------- theme ---------------- */
+  function toggleTheme(){
+    var h = document.documentElement;
+    h.setAttribute('data-theme', h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  }
+
+  /* ---------------- keyboard ---------------- */
+  document.addEventListener('keydown', function(e){
+    var k = e.key;
+    if (k === 'ArrowRight' || k === 'PageDown' || k === ' ') { e.preventDefault(); next(); }
+    else if (k === 'ArrowLeft' || k === 'PageUp') { e.preventDefault(); prev(); }
+    else if (k === 'Home') { e.preventDefault(); goTo(0); }
+    else if (k === 'End')  { e.preventDefault(); goTo(total - 1); }
+    else if (k === 'f' || k === 'F') { toggleFull(); }
+    else if (k === 't' || k === 'T') { toggleTheme(); }
+    else if (k === 'p' || k === 'P') { window.print(); }
+    else if (k === 'o' || k === 'O') { outline.classList.toggle('open'); }
+    else if (k === 'Escape') { outline.classList.remove('open'); }
+  });
+
+  btnPrev.addEventListener('click', prev);
+  btnNext.addEventListener('click', next);
+  document.getElementById('btnFull').addEventListener('click', toggleFull);
+  document.getElementById('btnTheme').addEventListener('click', toggleTheme);
+  document.getElementById('btnPrint').addEventListener('click', function(){ window.print(); });
+  document.getElementById('btnOutline').addEventListener('click', function(){ outline.classList.toggle('open'); });
+  outline.addEventListener('click', function(e){ if (e.target === outline) outline.classList.remove('open'); });
+
+  /* swipe (touch devices) */
+  var tx = 0, ty = 0;
+  document.addEventListener('touchstart', function(e){
+    tx = e.changedTouches[0].clientX; ty = e.changedTouches[0].clientY;
+  }, {passive:true});
+  document.addEventListener('touchend', function(e){
+    var dx = e.changedTouches[0].clientX - tx;
+    var dy = e.changedTouches[0].clientY - ty;
+    if (Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy)) { if (dx < 0) next(); else prev(); }
+  }, {passive:true});
+
+  setTimeout(function(){ hintbar.classList.add('hide'); }, 7000);
+
+  /* ---------------- quiz ---------------- */
+  function initQuiz(rootId, scoreId){
+    var root  = document.getElementById(rootId);
+    var score = document.getElementById(scoreId);
+    if (!root) return;
+    var qs = Array.prototype.slice.call(root.querySelectorAll('.q'));
+    var correct = 0;
+
+    qs.forEach(function(q){
+      var ans  = q.getAttribute('data-ans');
+      var fb   = q.querySelector('.fb');
+      var opts = Array.prototype.slice.call(q.querySelectorAll('.opt'));
+      opts.forEach(function(btn){
+        btn.addEventListener('click', function(){
+          if (q.dataset.done) return;
+          q.dataset.done = '1';
+          var k = btn.getAttribute('data-k');
+          opts.forEach(function(b){
+            b.disabled = true;
+            if (b.getAttribute('data-k') === ans) b.classList.add('right');
+          });
+          if (k !== ans) btn.classList.add('wrong');
+          if (k === ans) correct++;
+          if (fb) {
+            var ok = (k === ans);
+            fb.innerHTML = '<span class="verdict ' + (ok ? 'ok' : 'no') + '">'
+                         + (ok ? '\u2713 Benar' : '\u2717 Kurang tepat') + ' \u2014 jawaban: '
+                         + ans.toUpperCase() + '</span>' + fb.innerHTML;
+            fb.classList.add('show');
+          }
+          q.classList.add('answered');
+          if (score) score.textContent = correct + ' / ' + qs.length;
+        });
+      });
+    });
+  }
+  initQuiz('quiz1', 'q1score');
+  initQuiz('quiz2', 'q2score');
+
+  /* ---------------- wiring tabs ---------------- */
+  var wireTabs = Array.prototype.slice.call(document.querySelectorAll('.tab[data-wire]'));
+  wireTabs.forEach(function(t){
+    t.addEventListener('click', function(){
+      wireTabs.forEach(function(x){ x.classList.remove('on'); });
+      t.classList.add('on');
+      var id = t.getAttribute('data-wire');
+      Array.prototype.slice.call(document.querySelectorAll('.wire-info')).forEach(function(p){
+        p.classList.toggle('on', p.id === id);
+      });
+    });
+  });
+
+  /* ---------------- Ohm's law calculator ---------------- */
+  (function(){
+    var v = document.getElementById('ohmV'),
+        i = document.getElementById('ohmI'),
+        r = document.getElementById('ohmR'),
+        out = document.getElementById('ohmOut');
+    if (!v || !out) return;
+    function num(el){ var x = parseFloat(el.value); return isNaN(x) ? null : x; }
+    function fmt(x){
+      if (!isFinite(x)) return '—';
+      var a = Math.abs(x);
+      if (a !== 0 && (a < 0.001 || a >= 1e7)) return x.toExponential(4).replace('.', ',');
+      return (Math.round(x * 1e6) / 1e6).toString().replace('.', ',');
+    }
+    document.getElementById('ohmGo').addEventListener('click', function(){
+      var V = num(v), I = num(i), R = num(r);
+      var have = [V, I, R].filter(function(x){ return x !== null; }).length;
+      if (have < 2) { out.innerHTML = '<b style="color:var(--accent2)">Masukkan minimal dua nilai.</b>'; return; }
+      if (have === 3) { out.innerHTML = 'Ketiga nilai sudah terisi. Kosongkan satu kolom agar dapat dihitung.'; return; }
+      if (V === null) {
+        V = I * R; v.value = Math.round(V * 1e6) / 1e6;
+        out.innerHTML = 'V = I × R = ' + fmt(I) + ' A × ' + fmt(R) + ' Ω = <b style="color:var(--accent)">' + fmt(V) + ' V</b>';
+      } else if (I === null) {
+        I = V / R; i.value = Math.round(I * 1e6) / 1e6;
+        out.innerHTML = 'I = V / R = ' + fmt(V) + ' V ÷ ' + fmt(R) + ' Ω = <b style="color:var(--accent)">' + fmt(I) + ' A</b>';
+      } else {
+        R = V / I; r.value = Math.round(R * 1e6) / 1e6;
+        out.innerHTML = 'R = V / I = ' + fmt(V) + ' V ÷ ' + fmt(I) + ' A = <b style="color:var(--accent)">' + fmt(R) + ' Ω</b>';
+      }
+    });
+    document.getElementById('ohmClr').addEventListener('click', function(){
+      v.value = ''; i.value = ''; r.value = '';
+      out.innerHTML = 'Masukkan dua nilai, lalu tekan <b>Hitung</b>.';
+    });
+  })();
+
+  /* ---------------- interactive power triangle ---------------- */
+  (function(){
+    var range = document.getElementById('pfRange');
+    if (!range) return;
+    var OX = 70, OY = 300, RL = 230, S = 100;   /* RL px represents S = 100 kVA */
+    var ptP = document.getElementById('ptP'),
+        ptQ = document.getElementById('ptQ'),
+        ptS = document.getElementById('ptS'),
+        ptArc = document.getElementById('ptArc'),
+        ptDot = document.getElementById('ptDot'),
+        ptPlab = document.getElementById('ptPlab'),
+        ptQlab = document.getElementById('ptQlab'),
+        ptSlab = document.getElementById('ptSlab'),
+        ptPhi  = document.getElementById('ptPhi'),
+        pfVal  = document.getElementById('pfVal'),
+        phiVal = document.getElementById('ptPhiVal'),
+        pVal   = document.getElementById('ptPVal'),
+        qVal   = document.getElementById('ptQVal'),
+        sVal   = document.getElementById('ptSVal');
+
+    function f2(x){ return x.toFixed(2).replace('.', ','); }
+    function f1(x){ return x.toFixed(1).replace('.', ','); }
+
+    function update(){
+      var pf  = parseInt(range.value, 10) / 100;
+      var sn  = Math.sqrt(Math.max(0, 1 - pf * pf));
+      var phi = Math.acos(pf) * 180 / Math.PI;
+      var P   = S * pf;
+      var Q   = S * sn;
+
+      var px = OX + RL * pf;
+      var py = OY - RL * sn;
+
+      ptP.setAttribute('x2', px); ptP.setAttribute('y2', OY);
+      ptQ.setAttribute('x1', px); ptQ.setAttribute('y1', OY);
+      ptQ.setAttribute('x2', px); ptQ.setAttribute('y2', py);
+      ptS.setAttribute('x1', OX); ptS.setAttribute('y1', OY);
+      ptS.setAttribute('x2', px); ptS.setAttribute('y2', py);
+      ptDot.setAttribute('cx', px); ptDot.setAttribute('cy', py);
+
+      var ar = 74;
+      var ax = OX + ar, ay = OY;
+      var bx = OX + ar * pf, by = OY - ar * sn;
+      ptArc.setAttribute('d', 'M' + ax + ',' + ay + ' A' + ar + ',' + ar + ' 0 0 0 ' + bx + ',' + by);
+
+      ptPlab.setAttribute('x', OX + (px - OX) / 2);
+      ptPlab.setAttribute('y', OY - 12);
+      ptQlab.setAttribute('x', px + 12);
+      ptQlab.setAttribute('y', OY - (OY - py) / 2);
+      ptSlab.setAttribute('x', OX + (px - OX) * 0.42 - 16);
+      ptSlab.setAttribute('y', OY - (OY - py) * 0.42 - 10);
+      ptPhi.setAttribute('x', OX + 26);
+      ptPhi.setAttribute('y', OY - 16);
+
+      pfVal.textContent  = f2(pf);
+      phiVal.textContent = f1(phi) + '°';
+      pVal.textContent   = f1(P) + ' kW';
+      qVal.textContent   = f1(Q) + ' kVAR';
+      sVal.textContent   = f1(S) + ' kVA';
+    }
+    range.addEventListener('input', update);
+    update();
+  })();
+
+  /* ---------------- boot ---------------- */
+  slides[0].classList.add('active');
+  render();
+})();
+</script>
+
+</body>
+</html>

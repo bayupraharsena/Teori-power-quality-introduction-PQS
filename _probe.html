@@ -1,0 +1,38 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>PENDING</title>
+<style>html,body{margin:0}iframe{width:1280px;height:720px;border:0}</style></head><body>
+<iframe id="f" src="index.html"></iframe>
+<script>
+var out=[];
+var f=document.getElementById('f');
+f.onload=function(){
+  var w=f.contentWindow, d=f.contentDocument;
+  var i=0, N=30;
+  function step(){
+    if(i>=N){ document.title='DONE :: '+(out.length?out.join(' || '):'ALL_CLEAN'); return; }
+    // measure current slide
+    var slides=d.querySelectorAll('.slide');
+    var s=slides[i];
+    var body=s.querySelector('.s-body');
+    var sr=s.getBoundingClientRect(), br=body.getBoundingClientRect();
+    var over = Math.round(body.scrollHeight - body.clientHeight);
+    var bottomGap = Math.round(sr.bottom - br.bottom);
+    var msg=[];
+    if(over>2) msg.push('bodyOverflow='+over);
+    if(bottomGap<40) msg.push('bottomGap='+bottomGap);
+    // any element sticking out of the slide
+    var worst=null, worstR=-1e9;
+    Array.prototype.forEach.call(body.querySelectorAll('*'), function(el){
+      var r=el.getBoundingClientRect();
+      if(r.height===0) return;
+      if(r.bottom>worstR){ worstR=r.bottom; worst=el; }
+    });
+    var spill = Math.round(worstR - sr.bottom);
+    if(spill>2) msg.push('spill='+spill+'@'+(worst?worst.tagName.toLowerCase()+'.'+String(worst.className).split(' ')[0]:'?'));
+    if(msg.length) out.push('S'+(i+1)+':'+msg.join(','));
+    i++;
+    w.dispatchEvent(new w.KeyboardEvent('keydown',{key:'ArrowRight',bubbles:true}));
+    setTimeout(step, 60);
+  }
+  setTimeout(step, 300);
+};
+</script></body></html>
